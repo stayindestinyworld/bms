@@ -1,0 +1,93 @@
+﻿    
+@{
+    string deployVersion = AppSettings.Current.DeployVersion;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay In Destiny World</title>
+    <link rel="shortcut icon" href="~/siw/img/logo/favicon.png" type="image/x-icon">
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/siw/css/bootstrap.min.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/plugin.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/style.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/responsive.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/flipper.min.css?v=@deployVersion">
+        @*<link rel="stylesheet" href="~/siw/css/demopage.css?v=@deployVersion">*@
+        <link href="~/siw/css/sweetalert2.css?v=@deployVersion" rel="stylesheet" />
+        <link href="~/siw/css/owl.carousel.min.css?v=@deployVersion" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link rel="stylesheet" href="~/siw/css/bootstrap.min.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/plugin.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/style.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/responsive.css?v=@deployVersion">
+        <link rel="stylesheet" href="~/siw/css/flipper.min.css?v=@deployVersion">
+        @*<link rel="stylesheet" href="~/siw/css/demopage.css?v=@deployVersion">*@
+        <link href="~/siw/css/sweetalert2.css?v=@deployVersion" rel="stylesheet" />
+        <link href="~/siw/css/owl.carousel.min.css?v=@deployVersion" rel="stylesheet" />
+    </environment>
+    @RenderSection("styleContent", required: false)
+<environment include="Development">
+    <script src="~/minified/js/knockout.min.js?v=@deployVersion" type="text/javascript"></script>
+    <script src="~/siw/js/moment.min.js?v=@deployVersion"></script>
+</environment>
+    <environment include="Production">
+        <script src="~/minified/js/knockout.min.js?v=@deployVersion" type="text/javascript"></script>
+        <script src="~/siw/js/moment.min.js?v=@deployVersion"></script>
+    </environment>
+    @RenderSection("RichSnippet", false)
+</head>
+<body class="home">
+    @*<partial name="_SIWHeaderLayout" />*@
+    @RenderBody()
+    @*<partial name="_SIWFooterLayout" />*@
+    <environment include="Development">
+        @*<script src="~/siw/js/x.js"></script>*@
+        <script src="~/siw/js/jquery.js?v=@deployVersion"></script>
+        <script src="~/siw/js/popper.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/bootstrap.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/plugin.js?v=@deployVersion"></script>
+        <script src="~/siw/js/TweenMax.js?v=@deployVersion"></script>
+        <script src="~/siw/js/mousemoveparallax.js?v=@deployVersion"></script>
+        <script src="~/siw/js/main.js?v=@deployVersion"></script>
+        <script src="~/siw/js/flipper.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/moment.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/sweetalert2.min.js?v=@deployVersion"></script>
+        <script type="text/javascript" src="~/siw/js/owl.carousel.js?v=@deployVersion"></script>
+        <script>
+            $(document).ready(function () {
+                $("#myflipper").flipper({ width: 1030, height: 534 });
+            });
+        </script>
+    </environment>
+    <!--Production-->
+    <environment include="Production">
+        @*<script src="~/siw/js/x.js"></script>*@
+        <script src="~/siw/js/jquery.js?v=@deployVersion"></script>
+        <script src="~/siw/js/popper.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/bootstrap.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/plugin.js?v=@deployVersion"></script>
+        <script src="~/siw/js/TweenMax.js?v=@deployVersion"></script>
+        <script src="~/siw/js/mousemoveparallax.js?v=@deployVersion"></script>
+        <script src="~/siw/js/main.js?v=@deployVersion"></script>
+        <script src="~/siw/js/flipper.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/moment.min.js?v=@deployVersion"></script>
+        <script src="~/siw/js/sweetalert2.min.js?v=@deployVersion"></script>
+        <script type="text/javascript" src="~/siw/js/owl.carousel.js?v=@deployVersion"></script>
+        <script>
+            $(document).ready(function () {
+                $("#myflipper").flipper({ width: 1030, height: 534 });
+            });
+        </script>
+    </environment>
+
+    @RenderSection("popup", required: false)
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,64 @@
+﻿
+<script src="~/Scripts/stomp.js"></script>
+<script type="text/javascript">
+    var RealTimeService = function () {
+        var self = this;
+        self.client = null;
+        self.user = 'user';
+        self.pass = '0W2CYxDT1r';
+        self.exchangeName = 'dev_message_user';
+        self.listenRouteKey = '*.message.user.';
+        self.sendingPattern = 'web.message.user.';
+        self.canConnect = false;
+        self.ffReceive = ko.observable(null);
+        self.ffSend = ko.observable(null);
+        self.setFFSend = function (ffSend) {
+            self.ffSend(ffSend);
+        };
+        self.setFFReceive = function (ffReceive) {
+            self.ffReceive(ffReceive);
+        };
+        self.initData = function (exchangeName, inboxMessageID) {
+           self.exchangeName = exchangeName;
+            self.listenRouteKey = self.listenRouteKey + inboxMessageID;
+            self.sendingPattern = self.sendingPattern + inboxMessageID;
+           InitRealTimeService();
+        };
+        function OnConnect(x) {
+            self.canConnect = true;
+            //Subcribe to an exchange and waiting for receive a message
+            self.client.subscribe('/exchange/' + self.exchangeName + '/' + self.listenRouteKey, function (d) {
+                if (self.ffReceive() != null) {
+                    //console.log(d);
+                    self.ffReceive()(JSON.parse(d.body));
+                }
+            });
+        };
+        function ONError() {
+            self.canConnect = false;
+            console.log('error');
+        };
+        function InitRealTimeService() {
+            var webStomeHost = 'web-rbmq.hfr.vn';
+            // Stomp.js boilerplate
+            var ws = new WebSocket('wss://' + webStomeHost + '/ws');
+            self.client = Stomp.over(ws);
+            self.client.debug = function () {
+                if (window.console && console.log && console.log.apply) {
+                    console.log.apply(console, arguments);
+                }
+            };
+            self.client.connect(self.user, self.pass, OnConnect, ONError, '/');
+        }
+        //Send json data to exchange
+        self.sendData = function (data) {
+            data.guidKey = self.guidKey;
+            if (self.canConnect == true) {
+                self.client.send('/exchange/' + self.exchangeName + '/' + self.sendingPattern, {}, JSON.stringify(data));
+            }
+            if (self.ffSend() != null) self.ffSend()();
+        };
+    };
+</script>
+
+

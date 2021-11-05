@@ -1,0 +1,118 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SiwAirdropLayout.cshtml";
+}
+@section styleContent{
+    <style>
+        .hidden-content {
+            display: none !important;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        .bg-logo{
+            margin-bottom:40px;
+        }
+    </style>
+}
+
+
+<section class="siw-airdrop">
+    <div class="container">
+        <div class="col-lg-12 bg-logo center-form">
+            <a href="/">
+                <img width="250" src="~/siw/img/logo/logo-siw.png" />
+            </a>
+        </div>
+        <div class="col-lg-12 center-form">
+            <div class="form-group">
+                <img width="35" id="icon-wallet" class="hidden-content" src="~/siw/img/icon/siw-icon-wallet.png" />
+                <span id="walletCheck" data-bind="value:walletID" class="fs-22 mgl-10 color-white wallet-icon me-1 wallet"> </span>
+            </div>
+            <div class="form-group">
+                <a href="#" id="connect-wallet" data-bind="click: $root.clickConnectWallet" class="bg-btn-connect-wallet">
+                    Connect Wallet
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-12 center-form">
+            <div class="form-group">
+                <span id="registered" class="fs-22 mgl-10 color-white hidden-content">@Localizer["Registered"]</span>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div data-bind="visible:processing().getProcessing('SiwAirdrop')">
+            <div class="loading-siw">
+                <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+            </div>
+        </div>
+        <div data-bind="visible:processing().getProcessing('SiwUser')">
+            <div class="loading-siw">
+                <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+            </div>
+        </div>
+        <div id="form-airdrop" class="hidden-content col-lg-12" style="display: flex; justify-content: center !important;">
+            <form class=" col-lg-6">
+                <div id="apply-form" class="form-group">
+                    <label class="color-white" style=" display: block;">Your Full Name</label>
+                    <input class="input-form" required="required" data-bind="value:fullname" type="text" placeholder="Enter Your Full Name">
+                </div>
+                <div class="form-group">
+                    <label class="color-white" style=" display: block;">Your Email </label>
+                    <input class="input-form" required="required" pattern="@@" type="text" data-bind="value:email" placeholder="Enter Your Email">
+                </div>
+                <div class="form-group">
+                    <label class="color-white" style=" display: block;">Your Telegram </label>
+                    <input class="input-form" required="required" type="text" data-bind="value:telegram" placeholder="Enter Your Telegram (Ex: @@destinyworld)">
+                </div>
+                <div class="form-group">
+                    <img width="50" class="img-social-media" src="/siw/img/icon/icon-twitter.png"> <span class="color-white"><a href="https://twitter.com/SIWdestinyworld" target="_blank">Twitter</a></span>
+                    <br /><span class="color-white">Follow - Retweet A Tweet - Quote Tweet & Tag 3 Your Friends</span>
+                </div>
+                <div id="apply-form" class="form-group">
+                    <label class="color-white" style=" display: block;">Your Twitter </label>
+                    <input class="input-form" required="required" type="text" data-bind="value:twitter" placeholder="Enter Your Twitter (Ex: @@destinyworld)">
+                </div>
+                <div id="apply-form" class="form-group">
+                    <label class="color-white" style=" display: block;">Link Retweet A Tweet </label>
+                    <input class="input-form" required="required" type="text" data-bind="value:twitter" placeholder="Enter Your Link Retweet A Tweet">
+                </div>
+                <div id="apply-form" class="form-group">
+                    <label class="color-white" style=" display: block;">The Wallet Address BSC - BEP20 To Join Airdrop </label>
+                    <input class="input-form" required="required" type="text" data-bind="value:twitter" placeholder="Enter Your Wallet Address (BSC - BEP20)">
+                </div>
+                <div class="form-group pdt-25">
+                    <a href="#" data-bind="click: $root.submitForm" class="bg-btn-airdrop">
+                        Register
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+@section popup{
+}
+@section scripts{
+    <partial name="_SiwAirdrop_JScript" />
+    <script type="text/javascript">
+        var SiwAirdropLanguage = {
+            valTitleSuccess: "@Localizer["valTitleSuccess"]",
+            valTitleMessage: "@Localizer["valTitleMessage"]",
+               valMessageMetamask: "@Localizer["valMessageMetamask"]",
+               valTitleFail: "@Localizer["valTitleFail"]",
+            valTitleEmailFail: "@Localizer["valTitleEmailFail"]",
+            valMessageEmail: "@Localizer["valMessageEmail"]",
+            valTitleEmptyFail: "@Localizer["valTitleEmptyFail"]",
+            valMessageEmpty: "@Localizer["valMessageEmpty"]",
+            valTitleUserFail: "@Localizer["valTitleUserFail"]",
+            valMessageUser: "@Localizer["valMessageUser"]",
+        };
+
+        var mv = new SiwUserSiwAirdropViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+    </script>
+}

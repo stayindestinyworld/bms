@@ -1,0 +1,613 @@
+﻿<script type="text/javascript">
+    var SortField = function (name, direction) {
+        var self = this;
+        self.name = ko.observable(name);
+        self.direction = ko.observable(direction);
+    }
+    var ItemProcessing = function (name, value) {
+        var self = this;
+        self.name = ko.observable(name);
+        self.value = ko.observable(value);
+    };
+    var ModelProcessing = function () {
+        var self = this;
+        self.completed = ko.observable(100);
+        self.processing = ko.observableArray([]);
+        self.setProcessing = function (name, value) {
+            var processing = ko.utils.arrayFirst(self.processing(), function (process) { return process.name() == name; });
+            if (processing != null) {
+                processing.value(value);
+            }
+            else {
+                self.processing.push(new ItemProcessing(name, value));
+            }
+            var numProcessing = 0;
+            ko.utils.arrayForEach(self.processing(), function (process) {
+                if (process.value() == true) numProcessing++;
+            });
+            if (numProcessing > 0) {
+                self.completed(((self.processing().length - numProcessing) * 100) / self.processing().length);
+            } else self.completed(100);
+        };
+        self.getProcessing = function (name) {
+            return ko.computed({
+                read: function () {
+                    var processing = ko.utils.arrayFirst(self.processing(), function (process) { return process.name() == name; });
+                    if (processing != null) return processing.value();
+                    return false;
+                },
+                write: function (name) {
+                }
+            }, self);
+        };
+    };
+
+    var ItemPaging = function (pageindex, pagesize, totalitems) {
+        var self = this;
+        self.arrPage = ko.observableArray([]);
+        self.pageIndex = ko.observable(pageindex);
+        self.pageSize = ko.observable(pagesize);
+        self.totalItems = ko.observable(totalitems);
+        self.totalPages = ko.computed(function () {
+            var pageNum = self.totalItems() / self.pageSize();
+            if (parseInt(pageNum) < pageNum) pageNum = parseInt(pageNum) + 1;
+            return pageNum;
+        });
+        self.pageItem = ko.observable(2);
+
+        self.resetPaging = function (pageindex, pagesize, totalitems) {
+            self.pageIndex(pageindex);
+            self.pageSize(pagesize);
+            self.totalItems(totalitems);
+            ReFormatPaging();
+        };
+        function ReFormatPaging() {
+            self.arrPage.removeAll();
+            var numpage = self.pageItem();
+            for (var i = self.pageIndex() - numpage; i < self.pageIndex(); i++) {
+                if (i > 0) self.arrPage.push(i);
+            }
+            self.arrPage.push(self.pageIndex());
+            for (var i = 1; i <= numpage; i++) {
+                if (self.pageIndex() + i <= self.totalPages())
+                    self.arrPage.push(self.pageIndex() + i);
+            }
+        }
+
+    };
+    // Replaces all instances of the given substring.
+    String.prototype.replaceAll = function (
+        strTarget, // The substring you want to replace
+        strSubString // The string you want to replace in.
+        ) {
+        var strText = this;
+        var intIndexOfMatch = strText.indexOf(strTarget);
+
+        // Keep looping while an instance of the target string
+        // still exists in the string.
+        while (intIndexOfMatch != -1) {
+            // Relace out the current instance.
+            strText = strText.replace(strTarget, strSubString)
+            // Get the index of any next matching substring.
+            intIndexOfMatch = strText.indexOf(strTarget);
+        }
+
+        // Return the updated string with ALL the target strings
+        // replaced out with the new substring.
+        return (strText);
+    };
+
+    String.prototype.replaceHtml = function () {
+        var strInputCode = this;
+        /* 
+		    This line is optional, it replaces escaped brackets with real ones, 
+		    i.e. &lt; is replaced with < and &gt; is replaced with >
+	    */
+        strInputCode = strInputCode.replace(/&(lt|gt);/g, function (strMatch, p1) {
+            return (p1 == "lt") ? "<" : ">";
+        });
+        var strTagStrippedText = strInputCode.replace(/<\/?[^>]+(>|$)/g, "");
+        return strTagStrippedText;
+    };
+
+    var Container = function (container, showdirection, hidediretion, status) {
+        var self = this;
+        self.container = ko.observable(container);
+        self.showDirection = ko.observable(showdirection)
+        self.hideDirection = ko.observable(hidediretion);
+        self.status = ko.observable(status); // show,hide
+    };
+    var ModelTransition = function () {
+        var self = this;
+        self.containers = ko.observableArray([]);
+        self.addContainer = function (container, showdirection, hidedirection) {
+            var eContainer = ko.utils.arrayFirst(self.containers(), function (con) {
+                return con.container() == container;
+            });
+            if (eContainer != null) {
+                eContainer.showDirection(showdirection);
+                eContainer.hideDirection(hidedirection);
+                eContainer.status("hide");
+            }
+            else {
+                self.containers.push(new Container(container, showdirection, hidedirection, "hide"));
+            }
+        };
+        self.showContainer = function (container) {
+            var currCon = ko.utils.arrayFirst(self.containers(), function (con) {
+                return con.status() == "show";
+            });
+            var showCon = ko.utils.arrayFirst(self.containers(), function (con) {
+                return con.container() == container;
+            });
+            if (showCon != null) {
+                if (currCon != null) {
+                    if (showCon.container() != currCon.container()) {
+                        $("#" + currCon.container()).css("opacity", "0.2");
+                        $("#" + currCon.container()).hide("slide", { direction: currCon.hideDirection() }, 500, function () {
+                            $("#" + showCon.container()).css("opacity", "1");
+                            $("#" + showCon.container()).show("slide", { direction: showCon.showDirection() }, 500);
+                        });
+                        currCon.status("hide");
+                        showCon.status("show");
+                    }
+                }
+                else {
+                    $("#" + showCon.container()).css("opacity", "1");
+                    $("#" + showCon.container()).show("slide", { direction: showCon.showDirection() }, 500);
+                    showCon.status("show");
+                }
+            }
+        };
+        self.hideContainer = function (container) {
+            var showCon = ko.utils.arrayFirst(self.containers(), function (con) {
+                return con.container() == container;
+            });
+            if (showCon != null) {
+                $("#" + showCon.container()).css("opacity", "1");
+                $("#" + showCon.container()).hide("slide", { direction: showCon.hideDirection() }, 250, function () { });
+                showCon.status("hide");
+            }
+        };
+        self.showGroup = function (container, groupby) {
+            var showCon = ko.utils.arrayFirst(self.containers(), function (con) {
+                return con.container() == container;
+            });
+            if (showCon != null) {
+                $('div[' + groupby + '="' + showCon.container() + '"]').css("opacity", "1");
+                $('div[' + groupby + '="' + showCon.container() + '"]').each(function (index) {
+                    $(this).show("slide", { direction: showCon.showDirection() }, index * 100, function () { });
+                });
+                showCon.status("show");
+            }
+        };
+        self.hideGroup = function (container, groupby) {
+            var showCon = ko.utils.arrayFirst(self.containers(), function (con) {
+                return con.container() == container;
+            });
+            if (showCon != null) {
+                var count = $('div[' + groupby + '="' + showCon.container() + '"]').length;
+                $('div[' + groupby + '="' + showCon.container() + '"]').css("opacity", "1");
+
+                $('div[' + groupby + '="' + showCon.container() + '"]').each(function (index) {
+                    $(this).hide("slide", { direction: showCon.hideDirection() }, index * 100, function () { });
+                });
+                showCon.status("hide");
+            }
+        };
+    };
+
+    var SearchParam = function (key, value) {
+        var self = this;
+        self.key = ko.observable(key);
+        self.value = ko.observable(value);
+    };
+    function GenerateGUID() {
+        var d = new Date().getTime();
+        var guid = 'xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
+        });
+        return guid;
+    };
+
+    function GenerateLeadZero(num, size) {
+        var s = parseInt(num)+"";
+        while (s.length < size) s = "0" + s;
+        return s;
+    }
+    var MultiSelectItem = function (id, name) {
+        var self = this;
+        self.iD = ko.observable(id);
+        self.name = ko.observable(name);
+    };
+    function JoinMultiSelectItemID(arrItem) {
+        if (arrItem.length <= 0) {
+            return "";
+        }
+        if (arrItem.length == 1) return "" + arrItem[0].iD();
+        var rString = ""+arrItem[0].iD();
+        for (var i = 1; i < arrItem.length; i++) {
+            rString += ";" + arrItem[i].iD();
+        }
+        return rString;
+    }
+    function JoinMultiSelectItemName(arrItem) {
+        if (arrItem.length <= 0) {
+            return "";
+        }
+        if (arrItem.length == 1) return "" + arrItem[0].name();
+        var rString = "" + arrItem[0].name();
+        for (var i = 1; i < arrItem.length; i++) {
+            rString += " , " + arrItem[i].name();
+        }
+        return rString;
+    }
+
+    function roundToTwo(value) {
+        return (Math.round(value * 100) / 100);
+    }
+
+    var DateItem = function () {
+        var self = this;
+        self.dayOfWeek = ko.observable(null);
+        self.dayMonthYear = ko.observable(null);
+        self.checkDate = ko.observable(null);
+        self.day = ko.observable(null);
+        self.month = ko.observable(null);
+        self.year = ko.observable(null);
+    };
+    var WeekItem = function () {
+        var self = this;
+        self.month = ko.observable("");
+        self.week = ko.observable("");
+        self.year = ko.observable(null);
+        self.fromDate = ko.observable(null);
+        self.toDate = ko.observable(null);
+        self.isSelected = ko.observable(false);
+    };
+    var HourItem = function () {
+        var self = this;
+        self.currDate = ko.observable(null);
+        self.startHour = ko.observable(null);
+        self.isSelected = ko.observable(false);
+    };
+    var DateTracking = function () {
+        var self = this;
+
+        self.currWeek = ko.observable(null);
+        self.fromDate =  ko.observable(null);
+        self.toDate =  ko.observable(null);
+        self.currDate =  ko.observable(null);
+        self.arrDate = ko.observableArray([]);
+        self.arrWeek = ko.observableArray([]);
+        self.arrHour = ko.observableArray([]);
+        self.ffInit = ko.observable(null);
+        self.setFFInit = function (ffinit) {
+            self.ffInit(ffinit);
+        };
+        self.isGenerating = ko.observable(false)
+        function GenerateDate(fromdate, todate) {
+            self.arrDate([]);
+            var numday = moment(todate).diff(moment(fromdate), "days");
+            var startdate = moment(fromdate);
+            for (var i = 0; i < numday; i++) {
+                if (i > 0) {
+                    startdate.add(1, 'day');
+                }
+                var date = new DateItem();
+                date.dayOfWeek(startdate.format("dddd"));
+                date.day(startdate.format("DD"));
+                date.month(startdate.format("MMM"));
+                date.year(startdate.format("YY"));
+                date.dayMonthYear(startdate.format("DD/MMM/YY"));
+                date.checkDate(startdate.toDate());
+                self.arrDate.push(date);
+            }
+        }
+        function GenerateHour(fromdate) {
+            self.arrHour = ko.observableArray([]);
+            for (var i = 0; i < 24; i++) {
+                var hour = new HourItem();
+                hour.currDate(fromdate);
+                hour.startHour(i);
+                self.arrHour.push(hour);
+            }
+        }
+        function GenerateWeek(fromdate, todate) {
+            self.arrWeek([]);
+            var numday = moment(todate).diff(moment(fromdate), "days");
+            var startdate = moment(fromdate);
+            var week1 = new WeekName();
+            week1.week(parseInt(parseInt(startdate.format("D")) / 7) + 1);
+            week1.month(startdate.format("MM"));
+            week1.year(startdate.format("YYYY"));
+            week1.fromDate(startdate.toDate());
+            self.arrWeekName.push(week1);
+            for (var i = 1; i < numday + 1; i++) {
+                startdate.add(1, 'day');
+
+                if (i == numday) {
+                    week1.toDate(startdate.toDate());
+                } else {
+                    var month = startdate.format("MM");
+                    var year = startdate.format("YYYY");
+                    if (week1.year() == year && week1.month() == month) {
+                        if (startdate.format("dddd") == "Sunday") {
+                            week1.toDate(startdate.toDate());
+                        }
+                        if (startdate.format("dddd") == "Monday") {
+                            var oldWeek = week1.week();
+                            week1 = new WeekName();
+                            week1.week(oldWeek + 1);
+                            week1.month(startdate.format("MM"));
+                            week1.year(startdate.format("YYYY"));
+                            week1.fromDate(startdate.toDate());
+                            self.arrWeek.push(week1);
+                        }
+                    } else {
+                        week1 = new WeekItem();
+                        week1.week(parseInt(parseInt(startdate.format("D")) / 7) + 1);
+                        week1.month(startdate.format("MM"));
+                        week1.year(startdate.format("YYYY"));
+                        week1.fromDate(startdate.toDate());
+                        self.arrWeek.push(week1);
+                    }
+
+                }
+            }
+        }
+
+        function InitByDate(date) {
+            var weeknum = parseInt(moment(date).format("ww"));
+            self.fromDate(moment(moment(date).day("Monday").week(weeknum)).toDate());
+            self.toDate(moment(moment(date).day("Sunday").week(weeknum + 1)).toDate());
+            GenerateDate(self.fromDate(), self.toDate());
+            if (self.ffInit() != null) {
+                self.ffInit()();
+            }
+        }
+        self.getToday = function () {
+           if (self.currDate() != null) {
+               if (moment().diff(moment(self.currDate()), "days") != 0) {
+                   self.currDate(new Date());
+                   InitByDate(self.currDate());
+               }
+           } else {
+               self.currDate(new Date());
+               InitByDate(self.currDate());
+           }
+        };
+        self.getByDate = function (date) {
+            self.currDate(date);
+            InitByDate(self.currDate());
+        };
+        self.getNextByDate = function () {
+           var currdate = moment(self.toDate()).add(1, "days").toDate();
+           InitByDate(currdate);
+        };
+        self.getPrevByDate = function () {
+             var currdate = moment(self.fromDate()).add(-7, "days").toDate();
+             InitByDate(currdate);
+        };
+
+        self.initByWeek = function (fromdate, todate) {
+            if (self.isGenerating() == false) {
+                GenerateWeek(fromdate, todate);
+                if (self.arrWeek().length > 0) {
+                    self.getByWeek(self.arrWeek()[0]);
+                }
+            }
+        };
+        self.getByWeek = function (week) {
+            self.currWeek(week);
+            GenerateDate(self.currWeek().fromDate(), self.currWeek().toDate());
+            if (self.ffInit() != null) {
+                self.ffInit()();
+            }
+        };
+        self.getNextByWeek = function () {
+            var currIndex = self.arrWeekName().indexOf(self.currWeek());
+            if (currIndex > -1 && currIndex < self.arrWeek.length - 1) {
+                self.getByWeek(self.arrWeek()[currIndex + 1]);
+            }
+        };
+        self.getPrevByWeek = function () {
+           var currIndex = self.arrWeekName().indexOf(self.currWeek());
+           if (currIndex > -1 && currIndex > 0) {
+               self.getByWeek(self.arrWeek()[currIndex - 1]);
+           }
+        };
+    };
+
+    function RoundToTwo(value) {
+        return (Math.round(value * 100) / 100);
+    }
+    function parseDateToDisplay(date, displayformat) {
+        if (date == null) return "";
+        if (displayformat == null) {
+            displayformat = DateTimeFormat.DateToDisplay;
+        }
+        return moment(date).format(displayformat);
+    }
+    function parseDateToSaveString(date, convertformat) {
+    
+        if (date == null) return "";
+        if (!moment(date).isValid()) return null;
+        return moment(date).format(convertformat);
+    }
+
+    function parseStringToDate(datestring, convertformat) {
+        if (datestring == null || datestring == "") return null;
+        return moment(datestring, convertformat).toDate();
+    }
+    function parseStringToDisplayDate(datestring, convertformat, displayformat) {
+        if (datestring == null || datestring == "") return "";
+        return moment(datestring, convertformat).format(displayformat);
+    }
+
+    // Datetime
+    function parseDateTimeToDisplay(datetime, displayformat) {
+        if (datetime == null) return "";
+        return moment(datetime).format(displayformat);
+    }
+    function parseDateTimeToSaveString(datetime, convertformat) {
+        if (datetime == null) return "";
+        return moment(datetime).format(convertformat);
+    }
+
+    function parseStringToDateTime(datetimestring, convertformat) {
+        if (datetimestring == null || datetimestring == "") return null;
+        return moment(datetimestring, convertformat).toDate();
+    }
+    function parseStringToDisplayDateTime(datetimestring, convertformat, displayformat) {
+        if (datetimestring == null || datetimestring == "") return "";
+        return moment(datetimestring, convertformat).format(displayformat);
+    }
+
+    var DateTimeFormat = {
+        APIStringToDate: "DD/MM/YYYY",
+        APIStringToDateTime: "DD/MM/YYYY HH:mm:ss",
+        DateTimeToAPIString: "DD/MM/YYYY HH:mm:ss",
+        DateTimeToDisplay: "DD/MM/YYYY HH:mm:ss",
+        DateToAPIString: "DD/MM/YYYY",
+        DateToDisplay: "DD/MM/YYYY",
+    };
+    //get monday of a date
+    function getMonday( date ) {
+        var day = date.getDay() || 7;  
+        if( day !== 1 ) 
+            date.setHours(-24 * (day - 1)); 
+        return date;
+    }
+    //add num of day to a date
+    function addDays(date, days) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+
+
+    //check file type from file name
+    function checkFileType(fileinfo) {
+        fileinfo = fileinfo.toLowerCase();
+        var fileType = "Unknown";
+        if (fileinfo.indexOf(".sql")>-1)
+            {
+                file = "SQL";
+            }
+        else if (fileinfo.indexOf(".doc")>-1)
+            {
+                file = "Word";
+            }
+        else if (fileinfo.indexOf(".xls")>-1)
+            {
+                file = "Excel";
+            }
+        else if (fileinfo.indexOf(".pdf")>-1)
+            {
+                file = "PDF";
+            }
+        else if (fileinfo.indexOf(".exe")>-1)
+            {
+                file = "System";
+            }
+        else if (fileinfo.indexOf(".rar")>-1)
+            {
+                file = "Winrar";
+            }
+        else if (fileinfo.indexOf(".zip")>-1)
+            {
+                file = "Zip";
+            }
+        else if (fileinfo.indexOf(".txt")>-1)
+            {
+                file = "Text";
+            }
+        else if (fileinfo.indexOf(".ppt")>-1)
+            {
+                file = "PowerPoint";
+            }
+        else if (fileinfo.indexOf(".gif")>-1 || fileinfo.indexOf(".jpg")>-1 || fileinfo.indexOf(".jpe")>-1 || fileinfo.indexOf(".png")>-1 || fileinfo.indexOf(".bmp")>-1 || fileinfo.indexOf(".tif")>-1||fileinfo.indexOf(".ico")>-1)
+            {
+                file = "Image";
+            }
+        else if (fileinfo.Contains(".msg"))
+            {
+                file = "Outlook file";
+            }
+        else
+            {
+                file = "Unknown";
+        }
+        return file;
+    }
+
+    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    //:::                                                                         :::
+    //:::  This routine calculates the distance between two points (given the     :::
+    //:::  latitude/longitude of those points). It is being used to calculate     :::
+    //:::  the distance between two locations using GeoDataSource (TM) prodducts  :::
+    //:::                                                                         :::
+    //:::  Definitions:                                                           :::
+    //:::    South latitudes are negative, east longitudes are positive           :::
+    //:::                                                                         :::
+    //:::  Passed to function:                                                    :::
+    //:::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :::
+    //:::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :::
+    //:::    unit = the unit you desire for results                               :::
+    //:::           where: 'M' is statute miles (default)                         :::
+    //:::                  'K' is kilometers                                      :::
+    //:::                  'N' is nautical miles                                  :::
+    //:::                                                                         :::
+    //:::  Worldwide cities and other features databases with latitude longitude  :::
+    //:::  are available at https://www.geodatasource.com                         :::
+    //:::                                                                         :::
+    //:::  For enquiries, please contact sales@geodatasource.com                  :::
+    //:::                                                                         :::
+    //:::  Official Web site: https://www.geodatasource.com                       :::
+    //:::                                                                         :::
+    //:::               GeoDataSource.com (C) All Rights Reserved 2018            :::
+    //:::                                                                         :::
+    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    function distance(lat1, lon1, lat2, lon2, unit) {
+        if ((lat1 == lat2) && (lon1 == lon2)) {
+            return 0;
+        }
+        else {
+            var radlat1 = Math.PI * lat1 / 180;
+            var radlat2 = Math.PI * lat2 / 180;
+            var theta = lon1 - lon2;
+            var radtheta = Math.PI * theta / 180;
+            var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+            if (dist > 1) {
+                dist = 1;
+            }
+            dist = Math.acos(dist);
+            dist = dist * 180 / Math.PI;
+            dist = dist * 60 * 1.1515;
+            if (unit == "K") { dist = dist * 1.609344 }
+            if (unit == "N") { dist = dist * 0.8684 }
+            return dist;
+        }
+    }
+
+    function ReplaceSign(str) {
+        if (str == null) return "";
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        return str;
+    }
+    function GenSearchKeyword(str) {
+        str = ReplaceSign(str);
+        str = str.replaceAll(" ", "");
+        return str;
+    }
+</script>

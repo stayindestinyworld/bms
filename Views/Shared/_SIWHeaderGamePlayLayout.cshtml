@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject BMS.Utils.IWebHelper webHelper
+@{
+    string locketUrl = string.Format("/locket");
+    string myfriendUrl = string.Format("/myfriend");
+    string infinityStoneUrl = string.Format("/infinitystone");
+    string mybackpackUrl = string.Format("/my-backpack");
+}
+<div class="section-menu" style="background-color: black;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="menu-item">
+                    <div class="text-center custom-menu-item">
+
+                        <a style="font-size: 13px; color: #b7afff; padding: 10px 25px;" href="@locketUrl" class="active">Locket</a>
+
+                        <a style="font-size: 13px; color: #b7afff; padding: 10px 25px;" href="@myfriendUrl">My Friends</a>
+
+                        <a style="font-size: 13px; color: #b7afff; padding: 10px 25px;" href="@mybackpackUrl">My Backpack</a>
+                        <a style="font-size: 13px; color: #b7afff;  padding: 10px 25px;" href="#">My Adventure</a>
+                        <a style="font-size: 13px; color: #b7afff; padding: 10px 25px;" href="@infinityStoneUrl">Infinity Stone</a>
+                        <a style="font-size: 13px; color: #b7afff; padding: 10px 25px;" href="#">Ranking</a>
+                        <a style="font-size: 13px; color: #b7afff;  padding: 10px 25px;" href="#">Combine</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

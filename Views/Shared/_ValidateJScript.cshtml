@@ -1,0 +1,83 @@
+﻿<script type="text/javascript">
+    var ValidateField = function (name, isvalid, valmsg) {
+        var self = this;
+        self.name = ko.observable(name);
+        self.isValid = ko.observable(isvalid);
+        self.valMsg = ko.observable(valmsg);
+    }
+    var ValidationManager = function () {
+        var self = this;
+        self.isValid = ko.observable(false);
+        self.arrValidateField = ko.observableArray([]);
+        self.set = function (name,isvalid, valmsg) {
+            var valfield = ko.utils.arrayFirst(self.arrValidateField(), function (valfield1) { return valfield1.name() == name; });
+            if (valfield != null) {
+                valfield.isValid(isvalid);
+                valfield.valMsg(valmsg);
+            } 
+            else {
+                self.arrValidateField.push(new ValidateField(name,isvalid, valmsg));
+            }
+            var numValid = 0;
+            ko.utils.arrayForEach(self.arrValidateField(), function (valfield) {
+                if (valfield.isValid() == true||valfield.valMsg()=="") {
+                    valfield.valMsg("");
+                    numValid++;
+                }
+            });
+            if (numValid == self.arrValidateField().length) {
+                self.isValid(true);
+            } else self.isValid(false);
+        };
+        self.get = function (name) {
+            return ko.computed({
+                read: function () {
+                    var valfield = ko.utils.arrayFirst(self.arrValidateField(), function (valfield1) { return valfield1.name() == name; });
+                    if (valfield == null) {
+                        valfield = new ValidateField(name, false, "");
+                        self.arrValidateField.push(valfield);
+                    }
+                    return valfield;
+                    
+                },
+                write: function (name) {
+                }
+            }, self);
+        };
+        self.reset = function () {
+            ko.utils.arrayForEach(self.arrValidateField(), function (valfield) {
+                valfield.isValid(false);
+                valfield.valMsg("");
+            });
+            self.isValid(false);
+        };
+    };
+    function validateEmail(email) {
+        if (email.length < 5) return false;
+        var a = String.fromCharCode(64);
+        var lastAtPos = email.lastIndexOf(a);
+        var lastDotPos = email.lastIndexOf('.');
+        return (lastAtPos < lastDotPos && lastAtPos > 0 &&lastDotPos>0);
+    }
+    function validatePhoneNumber(phoneNumber) {
+        return phoneNumber.length == 9 || phoneNumber.length == 10;
+    }
+    function validatePassword(password) {
+               // var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+        // at least one number, one lowercase and one uppercase letter
+        // at least six characters that are letters, numbers or the underscore
+        return password!=null&&password!=""&&password.length >= 6;
+    }
+    function validateIdentityNumber(identityNumber) {
+        if (identityNumber.length < 9) {
+            return false;
+        }
+        var isValid = true;
+        for (var i = 0; i < identityNumber.length&&isValid==true; i++) {
+            if (identityNumber.charCodeAt(i) < 48 || identityNumber.charCodeAt(i) > 57) {
+                isValid = false;
+            }
+        }
+        return isValid;
+    }
+  </script>

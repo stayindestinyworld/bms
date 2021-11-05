@@ -1,0 +1,182 @@
+﻿<script type="text/javascript">
+    var UploadFileItem = function (
+    ) {
+        var self = this;
+        self.controlId = GenerateGUID();
+        self.fileName = ko.observable("");
+        self.fileDisplaySize = ko.observable("");
+        self.fileSize = ko.observable(0);
+        self.fileType = ko.observable("");
+        self.fileUrl = ko.observable("");
+        self.isUploading = ko.observable(false);
+        self.isRendering = ko.observable(false);
+        self.isValid = ko.observable(false);
+        self.isUploaded = ko.observable(false);
+        self.errorMessage = ko.observable("");
+        self.fileBuffer = null;
+        self.guidKey = ko.observable("");
+    };
+    var UploadFilesViewModel = function () {
+        var self = this;
+        self.uploadFileType = ko.observable("UploadUserProfile");
+        self.isAutoUpload = ko.observable(false);
+        self.isRenderReview = ko.observable(true);
+        self.arrUploadItem = ko.observableArray([]);
+
+        self.ffRender = ko.observable(null);
+        self.ffUpload = ko.observable(null);
+        self.currUploadItem = ko.observable(null);
+        self.setFFRender = function (ffRender) {
+            self.ffRender(ffRender);
+        };
+        self.setFFUpload = function (ffUpload) {
+            self.ffUpload(ffUpload);
+        };
+
+        self.initData = function () {
+            self.startAddUploadFile();
+        };
+
+        var fileTypes = [
+            "image/apng",
+            "image/bmp",
+            "image/gif",
+            "image/jpeg",
+            "image/pjpeg",
+            "image/png",
+            "image/svg+xml",
+            "image/tiff",
+            "image/webp",
+            "image/x-icon"
+        ];
+
+        function validFileType(file) {
+            return fileTypes.includes(file.type);
+        }
+
+        function returnFileSize(number) {
+            if (number < 1024) {
+                return number + 'bytes';
+            } else if (number >= 1024 && number < 1048576) {
+                return (number / 1024).toFixed(1) + 'KB';
+            } else if (number >= 1048576) {
+                return (number / 1048576).toFixed(1) + 'MB';
+            }
+        }
+
+        self.startAddUploadFile = function () {
+            var item = new UploadFileItem();
+            self.arrUploadItem.push(item);
+        };
+
+        self.startSelectFile = function (item) {
+            $("#" + item.controlId).click();
+        };
+
+        self.startRenderFile = function (item, element) {
+            if (self.isRenderReview()) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var output = document.getElementById('review' + item.controlId);
+                    output.src = reader.result;
+                };
+                reader.readAsDataURL(element.target.files[0]);
+            }
+            item.fileBuffer = element.target.files[0];
+            item.fileName(element.target.files[0].name);
+            item.fileSize(returnFileSize(element.target.files[0].size));
+            item.fileType(element.target.files[0].type);
+            if (self.ffRender() != null) self.ffRender()();
+            if (self.isAutoUpload() == true) {
+                self.startUploadToServer(item);
+            }
+        };
+
+        self.startUploadToServer = function (item) {
+            var duration = 0;
+            var url = "/MediaUpload/Upload";
+
+            switch (self.uploadFileType()) {
+                case "UploadUserProfile":
+                    url = "/MediaUpload/UploadUserProfile";
+                    break;
+                case "UploadImagesOfHouse":
+                    url = "/MediaUpload/UploadImagesOfHouse";
+                    break;
+                case "UploadImagesOfHousePosting":
+                    url = "/MediaUpload/UploadImagesOfHousePosting";
+                    break;
+                case "UploadImageSiw":
+                    url = "/MediaUpload/UploadImageSiw";
+                    break;
+            }
+            self.currUploadItem(item);
+            var formData = new FormData();
+            formData.append("file", item.fileBuffer, item.fileName());
+            formData.append("guidkey", item.guidKey());
+            @* if (self.uploadFileType() == "UploadUserProfile") {
+                formData.append("guidkey", item.guidKey());
+            } else {
+                formData.append("guidkey", item.controlId);
+            } *@
+            var method = "POST";
+            self.currUploadItem().isUploading(true);
+            if (APIConfig.token == "") { // call api without the token
+                fetch(APIConfig.baseUrl + url, {
+                    method: method, // POST or 'PUT'
+                    body: formData, // data can be `string` or {object}!
+                    headers: {
+                        "Content-Type": "multipart/form-data" //"multipart/mixed;boundary=gc0p4Jq0M2Yt08jU534c0p"
+                    }
+                }).then(function (response) {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        swal("Error", "Cannot call api please refresh and try again");
+                    }
+                }).then(function (data) {
+                    if (data.data.result == "Success") {
+                        self.currUploadItem().fileUrl(data.data.uploadMedia.fileURL);
+                        self.currUploadItem().isUploaded(true);
+                    } else {
+                        swal("Error", data.data.errorMessage);
+                    }
+                    self.currUploadItem().isUploading(false);
+                    if (self.ffUpload() != null) self.ffUpload()();
+                });
+
+            }
+            else { // call api with the token
+                if (APIConfig.startTime != null) {
+                    duration = moment().diff(moment(APIConfig.startTime), "seconds");
+                }
+                fetch(APIConfig.baseUrl + url, {
+                    method: method, // or 'PUT'
+                    body: formData, // data can be `string` or {object}!
+                    headers: {
+                        'Authorization': 'Bearer ' + APIConfig.token
+                    }
+                }).then(function (response) {
+                    if (response.ok) { //check request is OK return json result
+                        return response.json();
+                    } else {
+                        swal("Error", "Cannot call api please refresh and try again");
+                    }
+                }).then(function (data) {
+                    if (data.data.result == "Success") {
+                        self.currUploadItem().fileUrl(data.data.uploadMedia.fileURL);
+                        self.currUploadItem().isUploaded(true);
+                    } else {
+                        swal("Error", data.data.errorMessage);
+                    }
+                    self.currUploadItem().isUploading(false);
+                    if (self.ffUpload() != null) self.ffUpload()();
+                });
+            }
+        };
+
+        self.removeUploadItem = function (item) {
+            self.arrUploadItem.remove(item);
+        };
+    }
+</script>

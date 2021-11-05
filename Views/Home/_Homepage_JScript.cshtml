@@ -1,0 +1,63 @@
+<partial name="_CommonJScript" />
+<partial name="_FormatJScript" />
+<partial name="_ValidateJScript" />
+<partial name="_APIJScript" />
+<partial name="_HomepageJScript" />
+<partial name="_HomepageViewModelJScript" />
+<script src="~/Viewmodel/SiwEmailSubscribe/_SiwEmailSubscribeJScript.js"></script>
+<script src="~/Viewmodel/SiwEmailSubscribe/_SiwEmailSubscribeViewModelJScript.js"></script>
+<script type="text/javascript">
+    var HouseHomepageViewModel = function () {
+        var self = this;
+        self.processing = ko.observable(new ModelProcessing());
+        self.transition = ko.observable(new ModelTransition());
+        self.homepageVM = ko.observable(null);
+        self.siwEmailSubscribeVM = ko.observable(null);
+        self.email = ko.observable(null);
+        self.initData = function () {
+            var homepageVM = new HomepageViewModel();
+            homepageVM.initModel(self.transition, self.processing);
+            self.homepageVM(homepageVM);
+
+            var siwEmailSubscribeVM = new SiwEmailSubscribeViewModel();
+            siwEmailSubscribeVM.initModel(self.transition, self.processing);
+            self.siwEmailSubscribeVM(siwEmailSubscribeVM);
+
+            //int main view model
+            self.homepageVM().setFFInit(function () {
+            });
+
+            $('#valid-form input[type="text"]').blur(function () {
+                if ($(this).val()) {
+                    $(this).removeClass("error");
+                    $('#valid-form .empty-input').hide();
+                }
+            });
+        };
+        self.sendEmailSubscribe = function (item) {
+            $('#loading-off').show();
+            if (item.email() == null || item.email() == "") {
+                $('#loading-off').hide();
+                $('#valid-form input[type="text"]').addClass("error");
+                $('#valid-form .empty-input').show();
+            } else if (item.email().includes("@@") == false) {
+                $('#loading-off').hide();
+                $('#valid-form input[type="text"]').addClass("error");
+                $('#valid-form .empty-input').show();
+            } else {
+                var newEmailSubcribe = new SiwEmailSubscribe(
+                    0,
+                    item.email(),
+                    "",
+                    ""
+                );
+                self.siwEmailSubscribeVM().siwEmailSubscribe(newEmailSubcribe);
+                self.siwEmailSubscribeVM().finishEditSiwEmailSubscribe(self.siwEmailSubscribeVM().siwEmailSubscribe());
+                $('#loading-off').hide();
+                swal(HomeLanguage.valTitleSuccess, HomeLanguage.valTitleEmailMessage, "success");
+                self.email(null);
+            }
+        };
+
+    };
+</script>

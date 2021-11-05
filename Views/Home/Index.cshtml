@@ -1,0 +1,298 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject BMS.Utils.IWebHelper webHelper
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SIWLayout.cshtml";
+}
+@section styleContent{
+}
+<partial name="_SIWHeaderLayout" />
+
+<section id="main-page">
+    <div class="siw-banner">
+        @*<canvas id="universe"></canvas>*@
+        <div class="bg-menu-banner">
+            <div class="links">
+                <a href="#" class="btn-banner btn-not-allow">Play</a>
+            </div>
+            <div class="links-wl">
+                <a href="https://docsend.com/view/z3yyrqczmxna74fv" target="_blank" class="btn-banner">Whitepaper</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="siw-story-section">
+    <div class="container">
+        <div id="myflipper" style="margin: 45px auto;">
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-1.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-2.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-3.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-4.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-5.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-6.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-7.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-8.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-9.jpg" class="fullsize" /></div>
+            <div class="flipper-page no-padding"><img src="~/siw/img/story/siw-story-10.jpg" class="fullsize" /></div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section-myfriend">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="section-heading">
+                    <img width="400" src="~/siw/img/bg/siw-bg-title-my-friend.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="body-myfriend inner-myfriend">
+        <div class="owl-carousel slide-custom" id="slide-myfriend">
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-1.png" alt="Robert" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Robert</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">An eminent scientist and science master, but he suffers from poor vision</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-2.png" alt="Ryder" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Ryder</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">His best friend is the white horse</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-3.png" alt="Raphael" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Raphael</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">He heals all physical and spiritual wounds for others</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-4.png" alt="R.Hilda" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>R.Hilda</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">She was strong, strong as an Amazon warrior</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-5.png" alt="Richard" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Richard</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">Physically strong with a colossal appearance</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-6.png" alt="Radley" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Radley</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">Is obsessed with the forest, prefers to live hidden within it, and always has a mysterious, ghostly appearance</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-7.png" alt="Raymond" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Raymond</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">Unable to speak</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-8.png" alt="Regina" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Regina</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">Always obsessed with glory</p>
+                </div>
+            </div>
+            <div class="image-my-friend">
+                <div class="overview-image">
+                    <img class="img-my-friend" src="~/siw/img/bg/siw-bg-my-friend-9.png" alt="Ryby" />
+                </div>
+                <div class="title-my-friend">
+                    <h4>Ryby</h4>
+                </div>
+                <br /> <br />
+                <div class="content-my-friend">
+                    <p class="text-center color-white">Beautiful as a true Ruby</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section class="token-distribution">
+    <div class="row justify-content-end">
+        <img src="~/siw/img/bg/siw-bg-token-roadmap.jpg" />
+    </div>
+</section>
+<section class="section-thumbnail">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="section-heading">
+                    <img width="500" src="~/siw/img/bg/siw-bg-title-gallery.png" />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6">
+                <div class="thumbnail-detail">
+                    <img src="~/siw/img/bg/siw-bg-thumbnail-hero.png" alt="">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="thumbnail-detail">
+                    <img src="~/siw/img/bg/siw-bg-thumbnail-item.png" alt="">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="thumbnail-detail">
+                    <img src="~/siw/img/bg/siw-bg-thumbnail-monster.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="footer" id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="flogo">
+                    <div class="subscribe-box">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-12">
+                                <div class="heading-area">
+                                    <h5 class="sub-title">
+                                        Subscribe For Further Information
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12">
+                                <input class="input-email" required="required" pattern="@@" data-bind="value:email" type="text" placeholder="Your Email Address">
+                                <a href="#" data-bind="click: $root.sendEmailSubscribe" class="bg-btn-subscribe">
+                                    Subscribe
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <ul>
+                        <li>
+                            <a href="https://t.me/destinyworldgame" target="_blank">
+                                <img class="img-social-media" src="~/siw/img/icon/icon-telegram.png" alt="Telegram" />
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/siwdestinyworld/" target="_blank">
+                                <img class="img-social-media" src="~/siw/img/icon/icon-twitter.png" alt="Twitter" />
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://stayindestinyworld.medium.com/" target="_blank">
+                                <img class="img-social-media" src="~/siw/img/icon/icon-medium.png" alt="Medium" />
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-menu">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="copy-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Stay In Destiny World. All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<div class="bottomtotop">
+    <img src="~/siw/img/icon/icon-scroll-on-top.png" />
+</div>
+
+@section popup{
+}
+@section scripts{
+    <partial name="_Homepage_JScript" />
+    <script>
+        $('#slide-myfriend').owlCarousel({
+            margin: 120,
+            center: true,
+            loop: true,
+            nav: true,
+            navText: ['<img style="max-width:40px !important" src="siw/img/icon/siw-icon-slider-left.png"  aria-hidden="true"/>', '<img style="max-width:40px !important" src="siw/img/icon/siw-icon-slider-right.png"  aria-hidden="true"/>'],
+            responsive: {
+                0: {
+                    items: 1
+                },
+                768: {
+                    items: 2,
+                    margin: 15,
+                },
+                1000: {
+                    items: 3,
+                }
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        var HomeLanguage = {
+            valTitleSuccess: "@Localizer["valTitleSuccess"]",
+            valTitleEmail: "@Localizer["valTitleEmail"]",
+            valTitleEmailMessage: "@Localizer["valTitleEmailMessage"]",
+             valTitleError: "@Localizer["valTitleError"]",
+             valTitleErrorMessage:  "@Localizer["valTitleErrorMessage"]",
+        };
+        var mv = new HouseHomepageViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+
+    </script>
+}

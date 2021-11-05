@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@inject BMS.Utils.IWebHelper webHelper
+@{
+}
+<header class="header">
+    <div class="overlay"></div>
+    <div class="mainmenu-area">
+        <div class="container menu-bg">
+            <div class="row">
+                <div class="col-lg-12">
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <a class="navbar-brand" href="">
+                            <img class="show-logo"  src="siw/img/logo/logo-siw.png" alt="Logo img">
+                        </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_menu" aria-controls="main_menu"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse fixed-height" id="main_menu">
+                            <ul class="navbar-nav ml-auto mg-left-150">
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="nav-link btn-not-allow">Molakaverse
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link btn-not-allow">Smart Contract</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link btn-not-allow">Blog</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link btn-not-allow">Wiki</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link btn-not-allow">Auction Village</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="https://docsend.com/view/jsw8euge67hen5e7" class="nav-link" target="_blank">About Us</a>
+                                </li>
+                                <li class="nav-item">
+                                    <button href="#" class="nav-link bg-button-buy btn-not-allow">Buy Siw</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,345 @@
+﻿<script src="~/Content/addon/summernote/summernote.js" type="text/javascript"></script>
+@*<script src="~/Scripts/plugins/typehead/bootstrap3-typeahead.min.js" type="text/javascript"></script>*@
+
+<script type="text/javascript">
+   
+    ko.bindingHandlers.numbervalue = {
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            //initialize with some optional options
+            var options = allBindingsAccessor().currencyMaskOptions || { symbol: '', roundToDecimalPlace: 0 };
+            var value = ko.utils.unwrapObservable(valueAccessor());
+            $(element).val(value);
+            //handle the field changing
+            ko.utils.registerEventHandler(element, "change", function () {
+                var observable = valueAccessor();
+                var val = $(element).val();
+                if (isNaN(val) && val) {
+                    val = $.toNumber(val);
+                }
+                if (!val || val === "") {
+                    val = 0;
+                }
+                observable(val);
+            });
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                $(element).formatCurrency('destroy');
+            });
+        },
+        update: function (element, valueAccessor, allBindingsAccessor) {
+            var options = allBindingsAccessor().currencyMaskOptions || { symbol: '', roundToDecimalPlace: 0 };
+            var observable = valueAccessor();
+            var value = ko.utils.unwrapObservable(observable());
+            if (isNaN(value) && value) {
+                value = $.toNumber(value);
+            }
+            if (!value) {
+                value = 0;
+            }
+            $(element).val(value);
+            $(element).formatCurrency(options);
+            $(element).trigger('focus');
+            observable(value);
+        }
+    };
+
+    ko.bindingHandlers.inputnumber = {
+        'init': function (element, valueAccessor, allBindings) {
+
+            var parseVersion = function (matches) {
+                if (matches) {
+                    return parseFloat(matches[1]);
+                }
+            };
+            var operaVersion = window.opera && window.opera.version && parseInt(window.opera.version()),
+                userAgent = window.navigator.userAgent,
+                safariVersion = parseVersion(userAgent.match(/^(?:(?!chrome).)*version\/([^ ]*) safari/i)),
+                firefoxVersion = parseVersion(userAgent.match(/Firefox\/([^ ]*)/));
+
+            var previousElementValue = element.value,
+                timeoutHandle,
+                elementValueBeforeEvent,
+                //nonNumericReg = /[^0-9]/g
+                flag = element.getAttribute("data-flag"),
+                pattern = new RegExp(element.getAttribute("data-pattern"), flag);
+
+            var updateModel = function (event) {
+                clearTimeout(timeoutHandle);
+                elementValueBeforeEvent = timeoutHandle = undefined;
+
+                var elementValue = element.value.replace(pattern, '');
+                console.log(elementValue, pattern)
+                if (previousElementValue !== elementValue) {
+                    previousElementValue = elementValue;
+                    ko.expressionRewriting.writeValueToProperty(valueAccessor(), allBindings, bindingName, elementValue);
+                }
+                updateView();
+            };
+
+            var deferUpdateModel = function (event) {
+                if (!timeoutHandle) {
+                    elementValueBeforeEvent = element.value.replace(nonNumericReg, '');
+                    timeoutHandle = ko.utils.setTimeout(updateModel, 4);
+                }
+            };
+
+            var ieUpdateModel = ko.utils.ieVersion == 9 ? deferUpdateModel : updateModel;
+
+            var updateView = function () {
+                // check if new character is non numeric.
+                // if yes, replace it and return. Don't process it.
+                if (pattern.test(element.value)) {
+                    element.value = element.value.replace(pattern, '');
+                    return;
+                }
+                var modelValue = ko.utils.unwrapObservable(valueAccessor());
+                modelValue = modelValue.toString().replace(pattern, '')
+
+                if (modelValue === null || modelValue === undefined) {
+                    modelValue = '';
+                }
+                if (elementValueBeforeEvent !== undefined && modelValue === elementValueBeforeEvent) {
+                    ko.utils.setTimeout(updateView, 4);
+                    return;
+                }
+
+                if (element.value !== modelValue) {
+                    previousElementValue = modelValue;
+                    element.value = modelValue;
+                }
+            };
+
+            var onEvent = function (event, handler) {
+                ko.utils.registerEventHandler(element, event, handler);
+            };
+
+            if (ko.utils.ieVersion < 10) {
+                onEvent('propertychange', function (event) {
+                    if (event.propertyName === 'value') {
+                        ieUpdateModel(event);
+                    }
+                });
+
+                if (ko.utils.ieVersion == 8) {
+                    onEvent('keyup', updateModel); // A single keystoke
+                    onEvent('keydown', updateModel); // The first character when a key is held down
+                }
+                if (ko.utils.ieVersion >= 8) {
+                    registerForSelectionChangeEvent(element, ieUpdateModel); // 'selectionchange' covers cut, paste, drop, delete, etc.
+                    onEvent('dragend', deferUpdateModel);
+                }
+            } else {
+                onEvent('input', updateModel);
+
+                if (safariVersion < 5 && ko.utils.tagNameLower(element) === "textarea") {
+                    onEvent('keydown', deferUpdateModel);
+                    onEvent('paste', deferUpdateModel);
+                    onEvent('cut', deferUpdateModel);
+                } else if (operaVersion < 11) {
+                    onEvent('keydown', deferUpdateModel);
+                } else if (firefoxVersion < 4.0) {
+                    onEvent('DOMAutoComplete', updateModel);
+                    onEvent('dragdrop', updateModel); // <3.5
+                    onEvent('drop', updateModel); // 3.5
+                }
+            }
+
+            onEvent('change', updateModel);
+
+            ko.computed(updateView, null, {
+                disposeWhenNodeIsRemoved: element
+            });
+        }
+    };
+    ko.bindingHandlers.numberhtml = {
+        update: function (element, valueAccessor, allBindingsAccessor) {
+            var value = ko.utils.unwrapObservable(valueAccessor());
+            var formatoption = ko.utils.unwrapObservable(allBindingsAccessor().formatoptions) || { formatstring: '#.#' };
+            var formattedValue = numeral(value).format(formatoption.formatstring);
+            ko.bindingHandlers.text.update(element, function () { return formattedValue; });
+        }
+    };
+    ko.bindingHandlers.summernote = {
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            var options = valueAccessor();
+
+            var updateObservable = function (e) {
+                options($(element).code());
+            };
+
+            options.onkeydown = options.onkeyup = options.onfocus = options.onblur = updateObservable;
+            $(element).html(options());
+            $(element).summernote(options);
+        }
+    };
+    ko.bindingHandlers.enterkey = {
+        init: function (element, valueAccessor, allBindings, viewModel) {
+            var callback = valueAccessor();
+            $(element).keypress(function (event) {
+                var keyCode = (event.which ? event.which : event.keyCode);
+                if (keyCode === 13) {
+                    callback.call(viewModel);
+                    return false;
+                }
+                return true;
+            });
+        }
+    };
+    ko.bindingHandlers.map = {
+        init: function (element, valueAccessor) {
+            //openlayers map
+            var mapObj = ko.utils.unwrapObservable(valueAccessor());
+            var lng = mapObj.longitude() ? mapObj.longitude() : '106.660172';
+            var lat = mapObj.latitude() ? mapObj.latitude() : '10.762622';
+            var iconFeature = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([lng, lat]))
+            });
+            var color = 'blue';
+            //if (mapObj.status() == 'Unverified') {
+            //    color = 'grey';
+            //} else if (mapObj.status() == 'Verified') {
+            //    color = 'green';
+            //} else if (mapObj.status() == 'Active') {
+            //    color = 'blue';
+            //} else if (mapObj.status() == 'Closed') {
+            //    color = 'red';
+            //} else {
+            //    color = 'orange';
+            //}
+            var iconStyle = new ol.style.Style({
+                //image: new ol.style.Circle({
+                //    radius: 20,
+                //    fill: new ol.style.Fill({ color: color }),
+                //    stroke: new ol.style.Stroke({
+                //        color: 'white', width: 8
+                //    })
+                //})
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1],
+                    src: '/Images/map_marker.png',
+                    ////imgSize: [50, 50],
+                })
+            });
+            iconFeature.setStyle(iconStyle);
+            var vectorSource = new ol.source.Vector({ features: [iconFeature] });
+            var vectorLayer = new ol.layer.Vector({ source: vectorSource });
+            var rasterLayer = new ol.layer.Tile({ source: new ol.source.OSM() });
+
+            var view = new ol.View({
+                center: ol.proj.fromLonLat([lng, lat]),
+                zoom: 17
+            });
+            var map = new ol.Map({
+                layers: [rasterLayer, vectorLayer],
+                target: document.getElementById('map'),
+                view: view
+            });
+            var zoomslider = new ol.control.ZoomSlider();
+            map.addControl(zoomslider);
+
+            var popup = new ol.Overlay({
+                element: document.getElementById('popup'),
+                positioning: 'bottom-center',
+                stopEvent: false,
+                offset: [0, -10]
+            });
+            map.addOverlay(popup);
+
+            map.on('click', function (evt) {
+                var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+                    return feature;
+                });
+                if (feature) {
+                    var coordinates = feature.getGeometry().getCoordinates();
+                    popup.setPosition(coordinates);
+                    $('#popup').popover({
+                        placement: 'top',
+                        html: true,
+                        content: '<b>' + mapObj.address() + '</b>'
+                    });
+                    $('#popup').popover('show');
+                } else {
+                    $('#popup').popover('destroy');
+                }
+            });
+        }
+    };
+
+    ko.bindingHandlers.select2 = {
+        init: function (el, valueAccessor, allBindingsAccessor, viewModel) {
+            ko.utils.domNodeDisposal.addDisposeCallback(el, function () {
+                $(el).select2('destroy');
+            });
+
+            var allBindings = allBindingsAccessor(),
+                select2 = ko.utils.unwrapObservable(allBindings.select2);
+
+            $(el).select2(select2);
+        },
+        update: function (el, valueAccessor, allBindingsAccessor, viewModel) {
+            var allBindings = allBindingsAccessor();
+
+            if ("value" in allBindings) {
+                if ((allBindings.select2.multiple || el.multiple) && allBindings.value().constructor != Array) {
+                    $(el).val(allBindings.value().split(',')).trigger('change');
+                }
+                else {
+                    $(el).val(allBindings.value()).trigger('change');
+                }
+            } else if ("selectedOptions" in allBindings) {
+                var converted = [];
+                var textAccessor = function (value) { return value; };
+                if ("optionsText" in allBindings) {
+                    textAccessor = function (value) {
+                        var valueAccessor = function (item) { return item; }
+                        if ("optionsValue" in allBindings) {
+                            valueAccessor = function (item) { return item[allBindings.optionsValue]; }
+                        }
+                        var items = $.grep(allBindings.options(), function (e) { return valueAccessor(e) == value });
+                        if (items.length == 0 || items.length > 1) {
+                            return "UNKNOWN";
+                        }
+                        return items[0][allBindings.optionsText];
+                    }
+                }
+                $.each(allBindings.selectedOptions(), function (key, value) {
+                    converted.push({ id: value, text: textAccessor(value) });
+                });
+                $(el).select2("data", converted);
+            }
+            $(el).trigger("change");
+        }
+    };
+
+    //ko.bindingHandlers.typeahead = {
+    //    init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+    //        var $element = $(element);
+    //        var allBindings = allBindingsAccessor();
+    //        //var value = ko.utils.unwrapObservable(allBindings.value);
+    //        var source = ko.utils.unwrapObservable(valueAccessor());
+    //        var items = ko.utils.unwrapObservable(allBindings.items) || 4;
+
+    //        var valueChange = function (item) {
+    //            //console.log('item = ' + item);
+    //            return item;
+    //        };
+
+    //        var highlighter = function (item) {
+    //            var matchSpan = '<span style="color: blue;font-weight:bold">';
+    //            var query = this.query.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&');
+    //            return item.replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
+    //                return matchSpan + match + '</span>';
+    //            });
+    //        };
+
+    //        var options = {
+    //            source: source,
+    //            items: items,
+    //            updater: valueChange
+    //        };
+
+    //        $element
+    //            .attr('autocomplete', 'off')
+    //            .typeahead(options);
+    //    }
+    //};
+</script>

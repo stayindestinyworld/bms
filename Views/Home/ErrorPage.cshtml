@@ -1,0 +1,44 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_UserLayoutver2.cshtml";
+}
+@section styleContent{
+}
+<div class="st-404-page--solo" style="background-color: #04294f">
+    <div class="container">
+        <div class="row">
+            <div class="item-content col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <h1>404, Page Not Found!</h1>
+                <p>Something's wrong here. You have traveled out of the world</p>
+                <p><a href="/">BACK TO HOMEPAGE</a></p>
+            </div>
+            <div class="item-img  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <img src="~/UsersTheme/content/uploads/2020/image/error-page.png" width="600" alt="404 Page">
+            </div>
+        </div>
+    </div>
+</div>
+@section popup{
+}
+@section scripts{
+    <script src="~/Viewmodel/ErrorPage/_ErrorPageJScript.js"></script>
+    <script src="~/Viewmodel/ErrorPage/_ErrorPage_JScript.js"></script>
+    <script src="~/Viewmodel/ErrorPage/_ErrorPageViewModelJScript.js"></script>
+    <script src="~/Viewmodel/EmailSubcribe/_EmailSubscribeJScript.js"></script>
+    <script src="~/Viewmodel/EmailSubcribe/_EmailSubscribeViewModelJScript.js"></script>
+    <script src="~/Viewmodel/Shared/_CommonJScript.js"></script>
+    <script src="~/Viewmodel/Shared/_Validatejscript.js"></script>
+    <script src="~/Viewmodel/Shared/_FormatJScript.js"></script>
+    <partial name="/Views/Shared/_APIJScript.cshtml" />
+    <script type="text/javascript">
+        var ErrorPageLanguage = {
+            valTitleSuccess: "@Localizer["valTitleSuccess"]",
+            valTitleEmail: "@Localizer["valTitleEmail"]",
+            valTitleEmailMessage: "@Localizer["valTitleEmailMessage"]",
+        };
+        var mv = new HouseErrorPageViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+    </script>
+}

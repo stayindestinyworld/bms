@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+@{
+    var userProfile = BMS.Session.SessionHelper.UserProfile;
+    if (userProfile == null)
+    {
+        userProfile = new BMS.Session.UserProfile();
+    }
+}
+
+<li class="user-profile treeview">
+    <a href="index.html">
+        <img  src="@userProfile.profileImageUrl" alt="user">
+        <span>@userProfile.fullName</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-right pull-right"></i>
+        </span>
+    </a>
+
+    <ul class="treeview-menu">
+        <li>
+            <a href="@Url.Action("Logout","Account")"><i class="fas fa-sign-out-alt"></i>&nbsp; &nbsp; Logout</a>
+
+        </li>
+    </ul>
+</li>

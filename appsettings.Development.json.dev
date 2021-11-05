@@ -1,0 +1,38 @@
+﻿{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "AppSettings": {
+    "AppName": "SIW Monitoring",
+    "AppClientID": "SIWBMSLocal",
+    "AppClientSecret": "QVFOGGL5ECOTJE3RZPVRR477IW3SIWMM",
+    "AppClientScope": "SIWAPI",
+    "AppDomainUrl": "https://localhost:44399",
+    "EnvironmentFolderPrefix": "dev",
+    "TempFolderPrefix": "temp",
+    "MaxUploadFileSize": 1024,
+    "UseStaticServer": false,
+    "StaticServerEndPoint": "",
+    "StaticServerAccessKey": "",
+    "StaticServerSecretKey": "",
+    "IsDebug": false,
+    "IsLocal": true,
+    "Environment": "Development",
+    "DeployVersion": "1.0.0"
+
+  },
+  "SessionSettings": {
+    "Redis": ""
+  },
+  "IdentityServiceSettings": {
+    "Authority": "https://localhost:44333"
+  },
+  "BusinessAPISettings": {
+    "BusinessAPI_BaseUrl": "https://localhost:44388"
+  }
+}
+

@@ -1,0 +1,66 @@
+﻿    
+@{
+    string deployVersion = AppSettings.Current.DeployVersion;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay In Destiny World</title>
+    <link rel="shortcut icon" href="~/siw/img/logo/favicon.png" type="image/x-icon">
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/siw/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/siw/css/plugin.css">
+        <link rel="stylesheet" href="~/siw/css/style.css">
+        <link rel="stylesheet" href="~/siw/css/responsive.css">
+        <link href="~/siw/css/sweetalert2.css" rel="stylesheet" />
+    </environment>
+    <environment include="Production">
+        <link rel="stylesheet" href="~/siw/css/bootstrap.min.css">
+        <link rel="stylesheet" href="~/siw/css/plugin.css">
+        <link rel="stylesheet" href="~/siw/css/style.css">
+        <link rel="stylesheet" href="~/siw/css/responsive.css">
+        <link href="~/siw/css/sweetalert2.css" rel="stylesheet" />
+    </environment>
+    @RenderSection("styleContent", required: false)
+<environment include="Development">
+    <script src="~/minified/js/knockout.min.js?v=@deployVersion" type="text/javascript"></script>
+    <script src="~/siw/js/moment.min.js"></script>
+</environment>
+    <environment include="Production">
+        <script src="~/minified/js/knockout.min.js?v=@deployVersion" type="text/javascript"></script>
+
+        <script src="~/siw/js/moment.min.js"></script>
+    </environment>
+    @RenderSection("RichSnippet", false)
+</head>
+<body class="home">
+    @RenderBody()
+    <environment include="Development">
+        <script src="~/siw/js/jquery.js"></script>
+        <script src="~/siw/js/popper.min.js"></script>
+        <script src="~/siw/js/bootstrap.min.js"></script>
+        <script src="~/siw/js/plugin.js"></script>
+        <script src="~/siw/js/main.js"></script>
+        <script src="~/siw/js/moment.min.js"></script>
+        <script src="~/siw/js/sweetalert2.min.js"></script>
+    </environment>
+    <!--Production-->
+    <environment include="Production">
+        <script src="~/siw/js/jquery.js"></script>
+        <script src="~/siw/js/popper.min.js"></script>
+        <script src="~/siw/js/bootstrap.min.js"></script>
+        <script src="~/siw/js/plugin.js"></script>
+        <script src="~/siw/js/main.js"></script>
+        <script src="~/siw/js/moment.min.js"></script>
+        <script src="~/siw/js/sweetalert2.min.js"></script>
+    </environment>
+
+    @RenderSection("popup", required: false)
+    @RenderSection("scripts", required: false)
+</body>
+</html>

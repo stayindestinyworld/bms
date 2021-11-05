@@ -1,0 +1,22 @@
+﻿
+<script type="text/javascript">
+    var APIConfig = {
+        baseUrl: "@BMS.BusinessAPISettings.Current.BusinessAPI_BaseUrl"+"/api",
+        token: "@(BMS.Session.SessionHelper.APIAccessToken!=null?BMS.Session.SessionHelper.APIAccessToken.access_token:"")",
+        expiredIn: parseInt("@(BMS.Session.SessionHelper.APIAccessToken!=null?BMS.Session.SessionHelper.APIAccessToken.expires_in:0)"),
+        startTime: parseStringToDateTime("@(BMS.Session.SessionHelper.APIAccessToken!=null&&BMS.Session.SessionHelper.APIAccessToken.startTime.HasValue?BMS.Session.SessionHelper.APIAccessToken.startTime.Value.ToString("dd/MM/yyyy HH:mm:ss"):"")",DateTimeFormat.APIStringToDateTime)
+    };
+    var Language = {
+        CallAPIFailMessage: "Cannot connect to the server. Please check your network, refresh page and try again!",
+        DeleteConfirmTitle: "Delete",
+        DeleteConfirmMessage: "This item has been removed out of system",
+        DeleteResultTitle: "Delete",
+        DeleteResultSuccessMessage: "This item has been removed out of system",
+        DeleteResultFailMessage: "Your action has been failed. Please check your network, refresh page and try again!",
+        DeleteButtonYes:"Yes",
+        DeleteButtonNo:"No",
+        SaveResultTitle: "Save",
+        SaveResultSuccessMessage: "This item has been save to system!",
+        SaveResultFailMessage: "Your action has been failed. Please check your network, refresh page and try again!",
+    };
+</script>

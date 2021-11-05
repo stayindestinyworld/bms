@@ -1,0 +1,26 @@
+<partial name="_CommonJScript" />
+<partial name="_FormatJScript" />
+<partial name="_ValidateJScript" />
+<partial name="_APIJScript" />
+<partial name="~/Views/AppVersion/_AppVersionJScript.cshtml" />
+<partial name="~/Views/AppVersion/_AppVersionViewModelJScript.cshtml" />
+<script type="text/javascript">
+    var GetAppVersionViewModel = function () {
+        var self = this;
+        self.processing = ko.observable(new ModelProcessing());
+        self.pransition = ko.observable(new ModelTransition());
+        self.appVersionVM = ko.observable(null);
+        self.initData = function () {
+            var appVersionVM = new AppVersionViewModel();
+            appVersionVM.initModel(self.transition, self.processing);
+            self.appVersionVM(appVersionVM);
+            //init and load data for view model
+            self.appVersionVM().setSearchParam("applicationName","BMS");
+            self.appVersionVM().setSearchParam("lastestVersion","");
+            self.appVersionVM().initData();
+        };
+    };
+    var mv = new GetAppVersionViewModel();
+    mv.initData();
+    ko.applyBindings(mv);
+</script>
