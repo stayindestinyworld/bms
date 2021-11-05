@@ -1,0 +1,87 @@
+.demo-box {
+    padding: 60px 0 80px 0;
+}
+
+#my-flipper,
+#myflipper {
+    margin: 0 auto;
+}
+
+#myflipper h1 {
+    text-align: center;
+    font-size: 36px;
+    line-height: 340px;
+    font-weight: 100;
+    font-style: italic;
+}
+
+#myflipper h2 {
+    text-align: left;
+    font-size: 22px;
+}
+
+p.headline.first {
+    margin-top: 155px;
+}
+
+#myflipper p.headline {
+    display: block;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 100;
+    font-style: italic;
+    text-align: center;
+}
+
+p.left {
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    width: 40%;
+}
+
+p.right {
+    position: absolute;
+    width: 40%;
+    bottom: 30px;
+    right: 30px;
+}
+
+#myflipper .description.no-margin {
+    margin-top: 40px;
+}
+
+.flipper-page .fullsize {
+    /*	margin: -31px 0 0 -31px;*/
+}
+
+.mag {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+    -webkit-column-count: 2;
+    -webkit-column-gap: 20px;
+    column-count: 2;
+    column-gap: 20px;
+}
+
+.mag img {
+    float: left;
+    margin: 0 10px 10px 0;
+    width: 200px;
+}
+
+.video-wrapper {
+    width: 700px;
+    margin: 80px auto;
+}
+
+.video-wrapper h3 {
+    font-size: 36px;
+    line-height: 22px;
+    font-weight: 100;
+    cursor: pointer;
+    text-align: center;
+    font-family: helvetica;
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
