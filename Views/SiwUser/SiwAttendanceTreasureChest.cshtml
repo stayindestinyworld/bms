@@ -1,0 +1,299 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SiwAirdropLayout.cshtml";
+}
+@section styleContent{
+    <style>
+        .hidden-content {
+            display: none !important;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+
+
+        .bg-btn-connect-wallet {
+            animation: 2s ease-out 0s 1 FadeIn;
+        }
+
+        @@keyframes FadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .table-responsive {
+            overflow-x: unset;
+        }
+
+        .pagination li a {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            display: inline-block;
+            min-width: 25px;
+            padding: 0.4em 1em;
+            margin: 0 3px;
+            text-decoration: none;
+            cursor: pointer;
+            color: #67757c;
+            border: 1px solid transparent;
+            border-radius: 2px;
+        }
+
+        .pagination .active {
+            background-color: #4b220c;
+            color: #fff;
+        }
+    </style>
+}
+
+
+<section class="siw-airdrop">
+    <div class="container">
+        <div class="col-lg-12 bg-logo center-form">
+            <a href="/">
+                <img src="~/siw/img/logo/siw-logo-attedance.png" alt="Logo" />
+            </a>
+        </div>
+        <div class="col-lg-12 center-form">
+            <div class="form-group">
+                <img width="35" id="icon-wallet" class="hidden-content" src="~/siw/img/icon/siw-icon-wallet.png" />
+                <span id="walletCheck" data-bind="value:walletID" class="fs-22 mgl-10 color-white wallet-icon me-1 wallet"> </span>
+            </div>
+            <div class="form-group">
+                <a href="#" id="connect-wallet" data-bind="click: $root.clickConnectWallet" class="bg-btn-connect-wallet">
+                    Connect Wallet
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-12 center-form">
+            <div class="form-group">
+                <span id="registered" class="fs-22 color-white hidden-content">@Localizer["Attendance"]</span>
+                <span id="expired-time" class="fs-22 color-white hidden-content">Today's attendance is over !</span>
+            </div>
+        </div>
+        <!--ko with: $root.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest()-->
+        <!--ko if: hasClaim() == false && claim() == true-->
+        <div id="claim">
+            <div class="col-lg-12 center-form">
+                <div class="form-group">
+                    <p class="fs-22 color-white font-bold text-center">Your Reward</p>
+                    <img class="treasure-chest" data-bind="click: $root.clickClaim" width="350" src="~/siw/img/icon/test4.gif" alt="Treasure Chest">
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!--/ko-->
+        <div id="winners-list" class=" hidden-content">
+            <div class="col-lg-12 center-form">
+                <div class="winners-list-box">
+                    <div class="winners-list-box-top"></div>
+                    <div class="winners-list-box-bottom"></div>
+                    <div class="winners-list-box-left"></div>
+                    <div class="winners-list-box-right"></div>
+                </div>
+                <div class="form-group title-winners-list">
+                    <p style="cursor:pointer" data-bind="click: $root.checkWinnersList" class="fs-22 mgl-10 color-white font-bold text-center">Check Winners List Here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div data-bind="visible:processing().getProcessing('SiwAttendanceTreasureChest')">
+            <div class="loading-siw">
+                <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+            </div>
+        </div>
+        <div data-bind="visible:processing().getProcessing('SiwClaimAttendances')">
+            <div class="loading-siw">
+                <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+            </div>
+        </div>
+        <div data-bind="visible:processing().getProcessing('SiwHistoryClaimReward')">
+            <div class="loading-siw">
+                <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+            </div>
+        </div>
+        <div id="form-airdrop" class="hidden-content col-lg-12" style="display: flex; justify-content: center !important;">
+            <form class=" col-lg-6">
+                <div id="apply-form" class="form-group">
+                    <label class="color-white" style=" display: block;">The Wallet Address BSC - BEP20 (*) </label>
+                    <input class="input-form" required="required" type="text" data-bind="value:confirmWallet" placeholder="Enter Your Wallet Address (BSC - BEP20)">
+                </div>
+                <div class="form-group">
+                    <a href="https://twitter.com/SIWdestinyworld" target="_blank">
+                        <img width="50" class="img-social-media" src="/siw/img/icon/icon-twitter.png">
+                        <span class="color-white">
+                            Twitter
+                        </span>
+                    </a>
+                    <br /><span class="color-white">Rule: Follow - Retweet A Tweet - Quote Tweet & Tag 3 Your Friends</span>
+                </div>
+                <div id="apply-form" class="form-group">
+                    <label class="color-white" style=" display: block;">Your Twitter (*)</label>
+                    <input class="input-form" required="required" type="text" data-bind="value:twitter" placeholder="Enter Your Profile Link Twitter">
+                </div>
+                <div id="apply-form" class="form-group">
+                    <label class="color-white" style=" display: block;">Link Retweet A Tweet (*)</label>
+                    <input class="input-form" required="required" type="text" data-bind="value:linkRetweet" placeholder="Enter Your Link Retweet A Tweet">
+                </div>
+                <div class="form-group pdt-25">
+                    <a href="#" data-bind="click: $root.submitAttendance" class="bg-btn-airdrop">
+                        Attendance
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+<script id="SiwClaimAttendanceItem" type="text/html">
+    <tr>
+        <td style="text-align:center">
+            <span data-bind="html:(($parent.paging().pageIndex()-1)*$parent.paging().pageSize() + $index()+1)"></span>
+        </td>
+        <td>
+            <span data-bind="html:shortWallet"></span>
+        </td>
+    </tr>
+</script>
+@section popup{
+    <div class="modal fade siw-modal sign-in" id="signin" tabindex="-1" role="dialog" aria-labelledby="signin" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Winners List</h4>
+                </div>
+                <div class="modal-body" data-bind="with:siwClaimAttendancesVM">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div data-bind="visible:processing().getProcessing('SiwClaimAttendances')" class="row" style="z-index:2000;position:absolute; left:50%">
+                                <i class="fa fa-spin fa-refresh" style="font-size:20px;"></i>
+                            </div>
+                        </div>
+                        <div class="wan-cms__wrapper">
+                            <div class="box  wan-cms__box-content">
+                                <div class="box-body">
+                                    <div class="d-flex justify-content-between align-items-center _box-header">
+                                        <h4 class="box-title m-0"></h4>
+                                        <div>
+                                            <div class="input-group m-t wan-cms__search-box" style="width:320px">
+                                                <input type="text" class="form-control" style="height: 41px" placeholder="Enter your wallet..." data-bind="value:$root.siwClaimAttendancesVM().getSearchParam('searchCode').value" />
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-primary" type="submit" style="height: 41px" data-bind="click:searchWinnersList">
+                                                        <i class="far fa-search"></i> Search
+                                                    </button>
+                                                    <span class="wan-cms__search-box__icon-clear" data-bind="visible:getSearchParam('searchCode').value() != null && getSearchParam('searchCode').value() != '', click:resetSearchSiwClaimAttendance">
+                                                        <i class="far fa-times-circle"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive wan-cms__block-loader">
+                                        <div data-bind="visible:processing().getProcessing('SiwClaimAttendances')">
+                                            <div class="loading-siw">
+                                                <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+                                            </div>
+                                        </div>
+                                        <table class="table table-bordered">
+                                            <thead class="table table-bordered table-stripped">
+                                                <tr class="bg-pale-secondary">
+                                                    <th style="text-align: center; font-weight:bold;">
+                                                        No
+                                                    </th>
+                                                    <th class="font-weight-500">
+                                                        Wallet
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody data-bind="template:{name:'SiwClaimAttendanceItem',foreach:arrSiwClaimAttendance}">
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="11">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="text-right" data-bind="with:paging">
+                                                                    <ul class="pagination">
+                                                                        <li> <a data-bind="html:'Total <b>' + totalItems() + '</b> winners &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Page <b>'+ pageIndex() + '/' + totalPages() +'</b>'"></a></li>
+                                                                        <li data-bind="css:{disabled:pageIndex()==0}"><a data-bind="click:$parent.gotoPrevPage">&laquo;</a></li>
+                                                                        <!-- ko foreach:arrPage -->
+                                                                        <li data-bind="css:{active:$parent.pageIndex()==$data}"><a data-bind="html:$data ,click:$parents[1].gotoPage"></a></li>
+                                                                        <!-- /ko -->
+                                                                        <li data-bind="css:{disabled:pageIndex()>=totalPages()}"><a data-bind="click:$parent.gotoNextPage">&raquo;</a></li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--ko with: $root.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest()-->
+    <!--ko if: hasClaim() == false && claim() == true-->
+    <div class="modal fade siw-modal" id="reward-item" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 hidden-content" id="item0">
+                            <img width="70" src="~/siw/img/icon/siw-icon-mola.png" alt="Mola" /> <span class="color-white">+ 10 Mola</span>
+                        </div>
+                        <div class="col-md-12 hidden-content text-center" id="item1">
+                        </div>
+                        <div class="col-md-12 hidden-content text-center" id="item2">
+                        </div>
+                        <div class="col-md-12 hidden-content text-center" id="item3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ko-->      <!--/ko-->
+}
+@section scripts{
+    <partial name="_SiwAttendanceTreasureChest_JScript" />
+    <script type="text/javascript">
+
+        var SiwAtendanceTreasureChestLanguage = {
+            valTitleSuccess: "@Localizer["valTitleSuccess"]",
+            valTitleMessage: "@Localizer["valTitleMessage"]",
+               valMessageMetamask: "@Localizer["valMessageMetamask"]",
+               valTitleFail: "@Localizer["valTitleFail"]",
+            valTitleEmailFail: "@Localizer["valTitleEmailFail"]",
+            valMessageEmail: "@Localizer["valMessageEmail"]",
+            valTitleEmptyFail: "@Localizer["valTitleEmptyFail"]",
+            valMessageEmpty: "@Localizer["valMessageEmpty"]",
+            valTitleUserFail: "@Localizer["valTitleUserFail"]",
+            valMessageUrl: "@Localizer["valMessageUrl"]",
+            valMessageRetweetUrl: "@Localizer["valMessageRetweetUrl"]",
+            valMessageReceive: "@Localizer["valMessageReceive"]",
+            valFailClaim: "@Localizer["valFailClaim"]",
+            valFailWallet: "@Localizer["valFailWallet"]",
+        };
+        var mv = new SiwUserSiwAttendanceTreasureChestViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+    </script>
+}

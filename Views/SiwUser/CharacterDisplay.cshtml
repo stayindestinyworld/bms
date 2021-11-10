@@ -1,0 +1,205 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SIWGamePlayLayout.cshtml";
+    string locketUrl = string.Format("/locket");
+    string myfriendUrl = string.Format("/myfriend");
+    string infinityStoneUrl = string.Format("/infinitystone");
+    string mybackpackUrl = string.Format("/my-backpack");
+}
+@section styleContent{
+    <style>
+        hr {
+            border-color: #fff;
+        }
+
+        .hidden-content {
+            display: none !important;
+        }
+    </style>
+}
+
+<div class="header-game-play">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="content-header">
+                    <div class="left-area">
+                        <a class="navbar-brand" href="">
+                            <img class="show-logo" width="150" src="~/siw/img/logo/logo-siw.png" alt="Logo img">
+                        </a>
+                    </div>
+                    <div class="right-area">
+                        <section id="walletProfile" class="hidden-content">
+                            <div>
+                                <img width="30" id="icon-wallet" src="~/siw/img/icon/siw-icon-wallet.png" />
+                                <span id="walletCheck" data-bind="value:walletID" class="color-white wallet-icon me-1 wallet font-size-16"> </span>
+                            </div>
+                            <div>
+                                <img width="30" id="icon-bnb" class="mgl-30" src="~/siw/img/icon/siw-icon-bnb.png" />
+                                <span id="bnbToken" class="color-white wallet-icon me-1 wallet font-size-16"> 0</span>
+                            </div>
+                            <div>
+                                <img width="30" id="icon-siw" class="mgl-30" src="~/siw/img/icon/siw-icon-siw.png" />
+                                <span id="siwToken" class="color-white wallet-icon me-1 wallet font-size-16"> 0</span>
+                            </div>
+                            <a id="disconnect-wallet" href="#" data-bind="click: $root.clickDisconnectWallet" class="bg-button-disconnect mgl-20">Disconnect</a>
+                        </section>
+                        <a id="connect-wallet" href="#" data-bind="click: $root.clickConnectWallet" class="bg-button ">Connect Wallet</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="section-menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="menu-item">
+                    <div class="text-center custom-menu-item">
+
+                        <a style="font-size: 13px; padding: 21px 38px; " class="btn-menu-game-play" href="@locketUrl">Locket</a>
+
+                        <a style="font-size: 13px; padding: 21px 29px;" class="btn-menu-game-play btn-active" href="@myfriendUrl">My Friends</a>
+
+                        <a style="font-size: 13px; padding: 21px 24px;" class="btn-menu-game-play" href="@mybackpackUrl">My Backpack</a>
+                        <a style="font-size: 13px; padding: 10px 25px;" class="btn-menu-game-play" href="#">My Adventure</a>
+                        <a style="font-size: 13px; padding: 10px 25px;" class="btn-menu-game-play" href="@infinityStoneUrl">Infinity Stone</a>
+                        <a style="font-size: 13px; padding: 10px 25px;" class="btn-menu-game-play" href="#">Ranking</a>
+                        <a style="font-size: 13px; padding: 10px 25px;" class="btn-menu-game-play" href="#">Combine</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div data-bind="visible:processing().getProcessing('CharacterDisplay')">
+    <div class="loading-siw">
+        <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+    </div>
+</div>
+<section id="myGamePlay" class="user-main-dashboard hidden-content">
+    <div class="container" style="padding-top: 20px;">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4">
+                <aside>
+                    <div class="achievment-area">
+                        <div class="header-area">
+                            <h4>wardrobe</h4>
+                        </div>
+                        <div style=" padding-top: 20px;" class="s-a">
+                            <img width="60" style="margin-right: 10px; padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+                            <a href="#">
+                                Head
+                            </a>
+                        </div>
+                        <div style=" padding-top: 20px;" class="s-a">
+                            <img width="60" style="margin-right: 10px; padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+                            <a href="#">
+                                Body
+                            </a>
+                        </div>
+                        <div style=" padding-top: 20px;" class="s-a">
+                            <img width="60" style="margin-right: 10px; padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+                            <a href="#">
+                                Hands
+                            </a>
+                        </div>
+                        <div style=" padding-top: 20px;" class="s-a">
+                            <img width="60" style="margin-right: 10px; padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+                            <a href="#">
+                                Feet
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+                <aside style="margin-top: 100px;">
+                    <div class="achievment-area">
+                        <div style=" padding-top: 20px; text-align: center; display: inline-grid;" class="s-a">
+                            <img width="150" style="margin-right: 10px;" src="~/siw/img/icon/test3.gif" alt="">
+                            <a href="#">Claim</a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <div class="col-xl-3 col-lg-8">
+                <img width="250px" src="~/siw/img/character.png" />
+            </div>
+            <div class="col-xl-6 col-lg-8">
+                <main style="        height: 200px;
+        overflow: scroll;
+        overflow-x: hidden;
+        margin-bottom: 10px;">
+                    <div class="main-box">
+                        <div>
+                            <div class="game-info">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                                <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <div class="info-character-area">
+                    <h5>Name</h5>
+                </div>
+                <div class="info-character-area">
+                    <h5>Brought to Molaka in: Oct 21, 2021</h5>
+                </div>
+                <div class="info-character-area">
+                    <h5>ID#xxxx</h5>
+                </div>
+                <hr />
+                <div class="info-character-area">
+                    <h5>Rariry Stat: SHA256 (5%)</h5>
+                </div>
+                <hr />
+                <div class="info-character-area">
+                    <h5>Hunger: </h5> <span>150</span>
+                </div>
+                <div class="info-character-area">
+                    <h5>Friendly: </h5> <span>35</span>
+                </div>
+                <div class="info-character-area">
+                    <h5>Experience: </h5> <span>100</span>
+                </div>
+                <hr />
+                <a href="#" style="color: #b7afff; box-shadow: inset 0px 0px 6px 3px #00a2ff; padding: 10px 25px;">LOCK FOR ADVENTURE</a>
+            </div>
+        </div>
+    </div>
+</section>
+@section popup{
+}
+@section scripts{
+    <partial name="_CharacterDisplay_JScript" />
+
+    <script type="text/javascript">
+
+        $('body').addClass('bg-mainplay');
+           var CharacterDisplayLanguage = {
+               valMessageMetamask: "@Localizer["valMessageMetamask"]",
+               valTitleFail: "@Localizer["valTitleFail"]",
+            valTitleEmailMessage: "@Localizer["valTitleEmailMessage"]",
+             valTitleError: "@Localizer["valTitleError"]",
+             valTitleErrorMessage:  "@Localizer["valTitleErrorMessage"]",
+        };
+
+        var mv = new HomeCharacterDisplayViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+    </script>
+}

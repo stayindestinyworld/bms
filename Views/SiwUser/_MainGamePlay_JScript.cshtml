@@ -1,0 +1,44 @@
+<partial name="_CommonJScript" />
+<partial name="_FormatJScript" />
+<partial name="_ValidateJScript" />
+<partial name="_APIJScript" />
+<partial name="_MainGamePlayJScript" />
+<partial name="_MainGamePlayViewModelJScript" />
+<script type="text/javascript">
+    var SiwUserMainGamePlayViewModel = function () {
+        var self = this;
+        self.processing = ko.observable(new ModelProcessing());
+        self.transition = ko.observable(new ModelTransition());
+        self.mainGamePlayVM = ko.observable(null);
+        self.initData = function () {
+            var mainGamePlayVM = new MainGamePlayViewModel();
+            mainGamePlayVM.initModel(self.transition, self.processing);
+            self.mainGamePlayVM(mainGamePlayVM);
+            //int main view model
+            self.mainGamePlayVM().setFFInit(function() {
+            });
+            self.applyFilters();
+        };
+     //Start chart function
+        //End chart function
+        //Start filter function
+        self.applyFilters = function () {
+            GetFilterExpression();
+            self.mainGamePlayVM().initData();
+        };
+        self.clearFilters = function () {
+            ResetFilterExpression();
+            self.applyFilters();
+        };
+        function GetFilterExpression()
+        {
+        }
+        function ResetFilterExpression()
+        {
+            ko.utils.arrayForEach(self.mainGamePlayVM().arrSearchParam(), function(p) {
+                p.value(null);
+            });
+        }
+     //End filter function
+     };
+</script>

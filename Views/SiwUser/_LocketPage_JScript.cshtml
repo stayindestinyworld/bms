@@ -1,0 +1,201 @@
+<partial name="_CommonJScript" />
+<partial name="_FormatJScript" />
+<partial name="_ValidateJScript" />
+<partial name="_APIJScript" />
+<partial name="_LocketPageJScript" />
+<partial name="_LocketPageViewModelJScript" />
+<script src="~/Viewmodel/SiwMedal/_SiwMedalViewModelsJScript.js"></script>
+<script src="~/Viewmodel/SiwMedal/_SiwMedalJScript.js"></script>
+<script type="text/javascript">
+    var SiwUserLocketPageViewModel = function () {
+        var self = this;
+        self.processing = ko.observable(new ModelProcessing());
+        self.transition = ko.observable(new ModelTransition());
+        self.locketPageVM = ko.observable(null);
+        self.walletID = ko.observable(null);
+        const showWallet = document.querySelector(".wallet");
+        self.siwMedalsVM = ko.observable(null);
+
+        self.initData = function () {
+            var locketPageVM = new LocketPageViewModel();
+            locketPageVM.initModel(self.transition, self.processing);
+            self.locketPageVM(locketPageVM);
+
+            var siwMedalsVM = new SiwMedalsViewModel();
+            siwMedalsVM.initModel(self.transition, self.processing);
+            self.siwMedalsVM(siwMedalsVM);
+
+            //int main view model
+            self.locketPageVM().setFFInit(function () {
+            });
+            //self.applyFilters();
+        };
+        self.applyEffect = function () {
+            $('.owl-carousel').owlCarousel({
+                loop: false,
+                margin: 10,
+                nav: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 3
+                    },
+                    1000: {
+                        items: 5
+                    }
+                }
+            });
+        }
+        if (sessionStorage.getItem('stringW') != null) {
+            try {
+                window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }],
+                });
+                if (switchError.code != 4902 && switchError.code != 4001) {
+                    getWallet();
+                }
+            } catch (switchError) {
+                if (switchError.code != 4902 && switchError.code != 4001) {
+                    getWallet();
+                }
+                if (switchError.code === 4902) {
+                    try {
+                        window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: '0x38',
+                                chainName: 'Binance Smart Chain Mainnet',
+                                blockExplorerUrls: ['https://bscscan.com/'],
+                                rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                                nativeCurrency: {
+                                    name: 'Binance',
+                                    symbol: 'BNB',
+                                    decimals: 18,
+                                },
+                            }],
+                        });
+                        if (switchError.code != 4902 && switchError.code != 4001) {
+                            getWallet();
+                        }
+                    } catch (addError) {
+                        console.error(addError);
+                    }
+                }
+            }
+        }
+
+       
+        async function checkChain(item) {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }],
+                });
+                if (switchError.code != 4902 && switchError.code != 4001) {
+                    getWallet();
+                }
+            } catch (switchError) {
+                if (switchError.code != 4902 && switchError.code != 4001) {
+                    getWallet();
+                }
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: '0x38',
+                                chainName: 'Binance Smart Chain Mainnet',
+                                blockExplorerUrls: ['https://bscscan.com/'],
+                                rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                                nativeCurrency: {
+                                    name: 'Binance',
+                                    symbol: 'BNB',
+                                    decimals: 18,
+                                },
+                            }],
+                        });
+                        if (switchError.code != 4902 && switchError.code != 4001) {
+                            getWallet();
+                        }
+                    } catch (addError) {
+                        console.error(addError);
+                    }
+                }
+            }
+        }
+        async function getWallet() {
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0];
+            fullString = account;
+            secondString = account.slice(-4);
+            firstString = account.substring(0, 4);
+            const accountWallet = firstString + "..." + secondString;
+            $('#walletProfile').removeClass('hidden-content');
+            showWallet.innerHTML = accountWallet;
+            self.walletID = fullString;
+            $('#connect-wallet').addClass('hidden-content');
+            const balance = await ethereum.request({
+                method: 'eth_getBalance',
+                params: [fullString ],
+            });
+            const read = parseInt(balance) / 10 ** 18;
+
+            console.log(read.toFixed(4));
+            self.locketPageVM().setFFInit(function (data) {
+                if ($('#walletCheck').text().length > 0) {
+                    $('#myGamePlay').removeClass('hidden-content');
+                    if (typeof (Storage) !== 'undefined') {
+                        sessionStorage.setItem('stringW', fullString);
+                    }
+                    self.siwMedalsVM().initLocalData(data.locketPage.siwMedals);
+                    self.applyEffect();
+                };
+
+            });
+            self.locketPageVM().setSearchParam("stringWallet", fullString);
+            self.locketPageVM().initData();
+        }
+        self.clickConnectWallet = function (data) {
+            if (window.ethereum) {
+                checkChain();
+            } else {
+                swal(MyBackPackLanguage.valTitleFail, MyBackPackLanguage.valMessageMetamask, "warning");
+            }
+        };
+        self.clickDisconnectWallet = function () {
+            sessionStorage.clear();
+            window.location.reload();
+        }
+        ethereum.on('chainChanged', () => {
+            window.location.reload();
+        });
+        window.ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length > 0) {
+            } else {
+                window.location.reload();
+            }
+        });
+        //Start chart function
+        //End chart function
+        //Start filter function
+        self.applyFilters = function () {
+            GetFilterExpression();
+            self.locketPageVM().initData();
+        };
+        self.clearFilters = function () {
+            ResetFilterExpression();
+            self.applyFilters();
+        };
+        function GetFilterExpression() {
+        }
+        function ResetFilterExpression() {
+            ko.utils.arrayForEach(self.locketPageVM().arrSearchParam(), function (p) {
+                p.value(null);
+            });
+        }
+        //End filter function
+    };
+</script>

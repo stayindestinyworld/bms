@@ -1,0 +1,276 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SIWGamePlayLayout.cshtml";
+    string locketUrl = string.Format("/locket");
+    string myfriendUrl = string.Format("/myfriend");
+    string infinityStoneUrl = string.Format("/infinitystone");
+    string mybackpackUrl = string.Format("/my-backpack");
+}
+@section styleContent{
+    <style>
+        .content-vision-1,
+        .content-vision-2,
+        .content-vision-3,
+        .content-vision-4,
+        .content-vision-5,
+        .content-vision-6,
+        .content-vision-7 {
+            display: none;
+            position: absolute;
+            color: #fff;
+            padding: 10px;
+            padding-left: 50px;
+            padding-right: 50px;
+            margin-top: 50px;
+            height: 500px;
+            margin-right: 20px;
+            width:80%;
+        }
+
+        .menu-main-page {
+            height: 500px;
+        }
+
+        .vision-button-1,
+        .vision-button-2,
+        .vision-button-3,
+        .vision-button-4,
+        .vision-button-5,
+        .vision-button-6,
+        .vision-button-7 {
+            margin-right: 20px;
+        }
+
+        .section-menu {
+            height: 700px;
+        }
+    </style>
+
+}
+<div class="header-game-play">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="content-header">
+                    <div class="left-area">
+                        <a class="navbar-brand" href="">
+                            <img class="show-logo" width="150" src="~/siw/img/logo/logo-siw.png" alt="Logo img">
+                        </a>
+                    </div>
+                    @*<div class="right-area">
+                            <section id="walletProfile" class="hidden-content">
+                                <div>
+                                    <img width="30" id="icon-wallet" src="~/siw/img/icon/siw-icon-wallet.png" />
+                                    <span id="walletCheck" data-bind="value:walletID" class="color-white wallet-icon me-1 wallet font-size-16"> </span>
+                                </div>
+                                <div>
+                                    <img width="30" id="icon-bnb" class="mgl-30" src="~/siw/img/icon/siw-icon-bnb.png" />
+                                    <span id="bnbToken" class="color-white wallet-icon me-1 wallet font-size-16"> 0</span>
+                                </div>
+                                <div>
+                                    <img width="30" id="icon-siw" class="mgl-30" src="~/siw/img/icon/siw-icon-siw.png" />
+                                    <span id="siwToken" class="color-white wallet-icon me-1 wallet font-size-16"> 0</span>
+                                </div>
+                                <a id="disconnect-wallet" href="#" data-bind="click: $root.clickDisconnectWallet" class="bg-button-disconnect mgl-20">Disconnect</a>
+                            </section>
+                            <a id="connect-wallet" href="#" data-bind="click: $root.clickConnectWallet" class="bg-button ">Connect Wallet</a>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="section-menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="menu-item">
+                    <div class="text-center custom-menu-item">
+                        <a style="font-size: 13px; padding: 10px 25px;" href="@locketUrl" class="btn-menu-game-play vision-button-1">
+                            Locket
+                            <div class="content-vision-1">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="~/siw/img/icon/vision-content-2.png" />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+                                            Lorem Ipsum has been the industry's standard dummy text ever since
+                                            the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a style="font-size: 13px; padding: 10px 25px;" href="@myfriendUrl" class="btn-menu-game-play vision-button-2">
+                            My Friends
+                            <div class="content-vision-2">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="~/siw/img/character.png" width="200" />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                                Lorem Ipsum has been the industry's standard dummy text ever since
+                                                the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a style="font-size: 13px; padding: 10px 25px;" class="btn-menu-game-play vision-button-3" href="@mybackpackUrl">
+                            My Backpack
+                            <div class="content-vision-3">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="~/siw/img/icon/icon-vision-content-my-backpack.png" />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                                Lorem Ipsum has been the industry's standard dummy text ever since
+                                                the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a style="font-size: 13px;  padding: 10px 25px;" href="#" class="btn-menu-game-play vision-button-4">
+                            My Adventure
+                            <div class="content-vision-4">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="~/siw/img/icon/icon-vision-content-adventure.png" />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                                Lorem Ipsum has been the industry's standard dummy text ever since
+                                                the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a style="font-size: 13px; padding: 10px 25px;" href="@infinityStoneUrl" class="btn-menu-game-play vision-button-5">
+                            Infinity Stone
+                            <div class="content-vision-5">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="~/siw/img/icon/icon-vision-content-infinitystone.png" />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                                Lorem Ipsum has been the industry's standard dummy text ever since
+                                                the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a style="font-size: 13px;  padding: 10px 25px;" href="#" class="btn-menu-game-play vision-button-6">
+                            Ranking
+                            <div class="content-vision-6">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="~/siw/img/icon/icon-vision-content-ranking.png" />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                                Lorem Ipsum has been the industry's standard dummy text ever since
+                                                the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <a style="font-size: 13px; padding: 10px 25px;" href="#" class="btn-menu-game-play vision-button-7">
+                            Combine
+                            <div class="content-vision-7">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <img src="~/siw/img/icon/icon-vision-content-combine.png" />
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                                Lorem Ipsum has been the industry's standard dummy text ever since
+                                                the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".vision-button-1").hover(function () {
+        $('.content-vision-1').show('slow');
+    }, function () {
+        $('.content-vision-1').hide();
+    });
+    $(".vision-button-2").hover(function () {
+        $('.content-vision-2').show('slow');
+    }, function () {
+        $('.content-vision-2').hide();
+    });
+    $(".vision-button-3").hover(function () {
+        $('.content-vision-3').show('slow');
+    }, function () {
+        $('.content-vision-3').hide();
+    });
+    $(".vision-button-4").hover(function () {
+        $('.content-vision-4').show('slow');
+    }, function () {
+        $('.content-vision-4').hide();
+    });
+    $(".vision-button-5").hover(function () {
+        $('.content-vision-5').show('slow');
+    }, function () {
+        $('.content-vision-5').hide();
+    });
+    $(".vision-button-6").hover(function () {
+        $('.content-vision-6').show('slow');
+    }, function () {
+        $('.content-vision-6').hide();
+    });
+    $(".vision-button-7").hover(function () {
+        $('.content-vision-7').show('slow');
+    }, function () {
+        $('.content-vision-7').hide();
+    });
+</script>
+@section popup{
+}
+@section scripts{
+    <partial name="_MainGamePlay_JScript" />
+    <script type="text/javascript">
+        $('body').addClass('bg-test');
+        var mv = new SiwUserMainGamePlayViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+    </script>
+}

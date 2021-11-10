@@ -1,0 +1,193 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SIWGamePlayLayout.cshtml";
+    string locketUrl = string.Format("/locket");
+    string myfriendUrl = string.Format("/myfriend");
+    string infinityStoneUrl = string.Format("/infinitystone");
+    string mybackpackUrl = string.Format("/my-backpack");
+}
+@section styleContent{
+    <style>
+        .hidden-content {
+            display: none !important;
+        }
+    </style>
+}
+<div class="bg-mainplay">
+    <div class="header-game-play">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="content-header">
+                        <div class="left-area">
+                            <a class="navbar-brand" href="">
+                                <img class="show-logo" width="150" src="~/siw/img/logo/logo-siw.png" alt="Logo img">
+                            </a>
+                        </div>
+                        <div class="right-area">
+                            <section id="walletProfile" class="hidden-content">
+                                <div>
+                                    <img width="30" id="icon-wallet" src="~/siw/img/icon/siw-icon-wallet.png" />
+                                    <span id="walletCheck" data-bind="value:walletID" class="color-white wallet-icon me-1 wallet font-size-16"> </span>
+                                </div>
+                                <div>
+                                    <img width="30" id="icon-bnb" class="mgl-30" src="~/siw/img/icon/siw-icon-bnb.png" />
+                                    <span id="bnbToken" class="color-white wallet-icon me-1 wallet font-size-16"> 0</span>
+                                </div>
+                                <div>
+                                    <img width="30" id="icon-siw" class="mgl-30" src="~/siw/img/icon/siw-icon-siw.png" />
+                                    <span id="siwToken" class="color-white wallet-icon me-1 wallet font-size-16"> 0</span>
+                                </div>
+                                <a id="disconnect-wallet" href="#" data-bind="click: $root.clickDisconnectWallet" class="bg-button-disconnect mgl-20">Disconnect</a>
+                            </section>
+                            <a id="connect-wallet" href="#" data-bind="click: $root.clickConnectWallet" class="bg-button ">Connect Wallet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section-menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="menu-item">
+                        <div class="text-center custom-menu-item">
+
+                            <a style="font-size: 13px; padding: 10px 25px;" href="@locketUrl" class="btn-menu-game-play">Locket</a>
+
+                            <a style="font-size: 13px; padding: 10px 25px;" href="@myfriendUrl" class="btn-menu-game-play">My Friends</a>
+
+                            <a style="font-size: 13px; padding: 21px 24px;" class="btn-menu-game-play btn-active" href="@mybackpackUrl">My Backpack</a>
+                            <a style="font-size: 13px;  padding: 10px 25px;" href="#" class="btn-menu-game-play">My Adventure</a>
+                            <a style="font-size: 13px; padding: 10px 25px;" href="@infinityStoneUrl" class="btn-menu-game-play">Infinity Stone</a>
+                            <a style="font-size: 13px;  padding: 10px 25px;" href="#" class="btn-menu-game-play">Ranking</a>
+                            <a style="font-size: 13px; padding: 10px 25px;" href="#" class="btn-menu-game-play">Combine</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-bind="visible:processing().getProcessing('MyBackpack')">
+        <div class="loading-siw">
+            <img src="~/siw/img/icon/loading.svg" width="100" class="navbar-logo" alt="logo" />
+        </div>
+    </div>
+    <section id="myGamePlay" class="hidden-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-1">
+                    <aside>
+                        <div>
+                            <button class="button-background first-margin">
+                                <img width="70" class="custom-padding-item-1" src="~/siw/img/icon/siw-icon-all.png" alt="All">
+                            </button>
+                            <button class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-2" src="~/siw/img/icon/siw-icon-character.png" alt="Character">
+                            </button>
+                            <button data-bind="click: $root.clicktest" class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-3" src="~/siw/img/icon/siw-icon-weapon.png" alt="Weapon">
+                            </button>
+                            <button class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-4" src="~/siw/img/icon/siw-icon-head.png" alt="Head">
+
+                            </button>
+                            <button class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-5" src="~/siw/img/icon/siw-icon-armor.png" alt="Armor">
+
+                            </button>
+                            <button class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-6"  src="~/siw/img/icon/siw-icon-glove.png" alt="Glove">
+
+                            </button>
+                            <button class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-7"  src="~/siw/img/icon/siw-icon-foot.png" alt="Foot">
+
+                            </button>
+                            <button class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-8"  src="~/siw/img/icon/siw-icon-heal.png" alt="Heal">
+
+                            </button>
+                            <button class="button-background pdt-10">
+                                <img width="70" class="custom-padding-item-9" src="~/siw/img/icon/siw-icon-infinitystone.png" alt="InfinityStone">
+
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+                <div class="col-lg-6 bg-custom-1 without-border-top without-border-right ">
+                    <div class="main-box">
+                        <div class="game-info">
+                            <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                            <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                            <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                            <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                            <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                            <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                            <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 bg-custom-2 without-border-top without-border-left custom-border-left">
+                    <main class="text-center">
+                        <img width="150" src="~/siw/img/character.png" />
+                    </main>
+                    <div class="item-properties">
+                        <div class="info-character-area">
+                            <span class="font-size-16">Name</span>
+                        </div>
+                        <hr />
+                        <div class="info-character-area justify-space-between">
+                            <div class="without-mgb">
+                                <p class="font-size-16">Brought to Molaka in: Oct 21, 2021</p>
+                                <p class="font-size-16">ID#xxxx</p>
+                                <p class="font-size-16">Rariry Stat: SHA256 (5%)</p>
+                            </div>
+                            <a class="btn-combine font-color-3" href="">Combine</a>
+
+                        </div>
+                        <hr />
+                        <div class="info-character-area justify-space-between">
+                            <div>
+                                <span class="font-size-16">Hunger: </span> <span>150</span>
+                            </div>
+                            <a class="btn-use font-color-3" href="">Use</a>
+                        </div>
+                        <div class="info-character-area justify-space-between">
+                            <div>
+                                <span class="font-size-16">Friendly: </span> <span>35</span>
+                            </div>
+                            <a class="btn-use font-color-3" href="">Use</a>
+                        </div>
+                        <div class="info-character-area justify-space-between">
+                            <div>
+                                <span class="font-size-16">Experience: </span> <span>100</span>
+                            </div>
+                            <a class="btn-use font-color-3" href="">Use</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@section popup{
+}
+@section scripts{
+    <partial name="_MyBackpack_JScript" />
+    <script type="text/javascript">
+        var MyBackPackLanguage = {
+            valTitleSuccess: "@Localizer["valTitleSuccess"]",
+            valTitleMessage: "@Localizer["valTitleMessage"]",
+               valMessageMetamask: "@Localizer["valMessageMetamask"]",
+               valTitleFail: "@Localizer["valTitleFail"]"
+        };
+        $('body').addClass('bg-test');
+        var mv = new SiwUserMyBackpackViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+    </script>
+}

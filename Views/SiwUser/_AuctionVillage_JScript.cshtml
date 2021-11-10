@@ -1,0 +1,44 @@
+<partial name="_CommonJScript" />
+<partial name="_FormatJScript" />
+<partial name="_ValidateJScript" />
+<partial name="_APIJScript" />
+<partial name="_AuctionVillageJScript" />
+<partial name="_AuctionVillageViewModelJScript" />
+<script type="text/javascript">
+    var SiwUserAuctionVillageViewModel = function () {
+        var self = this;
+        self.processing = ko.observable(new ModelProcessing());
+        self.transition = ko.observable(new ModelTransition());
+        self.auctionVillageVM = ko.observable(null);
+        self.initData = function () {
+            var auctionVillageVM = new AuctionVillageViewModel();
+            auctionVillageVM.initModel(self.transition, self.processing);
+            self.auctionVillageVM(auctionVillageVM);
+            //int main view model
+            self.auctionVillageVM().setFFInit(function() {
+            });
+            self.applyFilters();
+        };
+     //Start chart function
+        //End chart function
+        //Start filter function
+        self.applyFilters = function () {
+            GetFilterExpression();
+            self.auctionVillageVM().initData();
+        };
+        self.clearFilters = function () {
+            ResetFilterExpression();
+            self.applyFilters();
+        };
+        function GetFilterExpression()
+        {
+        }
+        function ResetFilterExpression()
+        {
+            ko.utils.arrayForEach(self.auctionVillageVM().arrSearchParam(), function(p) {
+                p.value(null);
+            });
+        }
+     //End filter function
+     };
+</script>

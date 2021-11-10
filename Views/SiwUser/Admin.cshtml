@@ -1,0 +1,224 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SIWAdminLayout.cshtml";
+}
+@section styleContent{
+}
+<section class="content-header wan-cms__wrapper" data-bind="with:siwUsersVM">
+      <h1>@Localizer["Title"]  </h1>
+    @*<small>@Localizer["Title_Tooltip"] </small>
+    <ol class="breadcrumb">
+       <li class="breadcrumb-item">
+           <a href="/"><i class="fas fa-home"></i> Home </a>
+       </li>
+       <li class="breadcrumb-item active" style="font-weight:bold"> @Localizer["Title"] </li>
+    </ol>*@
+</section>
+<section class="content">
+<div class="wan-cms__wrapper" data-bind="with:siwUsersVM">
+        <div class="box  wan-cms__box-content">
+            <div class="box-body">
+                <div class="d-flex justify-content-between align-items-center _box-header">
+                   <h4 class="box-title m-0"></h4>
+                   <div>
+                       <div class="input-group m-t wan-cms__search-box" style="width:320px">
+                           <input type="text" class="form-control" style="height: 41px" placeholder="@Localizer["Placeholder_Search"]" data-bind="value:$root.siwUsersVM().getSearchParam('searchCode').value" />
+                           <div class="input-group-btn">
+                               <button class="btn btn-primary" type="submit" style="height: 41px" data-bind="click:searchSiwUsers">
+                                   <i class="far fa-search"></i> @Localizer["Button_Search"]
+                               </button>
+                               <span class="wan-cms__search-box__icon-clear" data-bind="visible:getSearchParam('searchCode').value() != null && getSearchParam('searchCode').value() != '', click:resetSearchSiwUser">
+                                   <i class="far fa-times-circle"></i>
+                               </span>
+                           </div>
+                       </div>
+                   </div>
+                   <div>
+                       <a class="btn btn-primary" style="color: #fff" data-bind="click:$root.clickRandom">
+                           <i class="far fa-plus"></i> @Localizer["Random"]
+                       </a>
+                       <a class="btn btn-primary" style="color: #fff" data-bind="click:$root.startAddSiwUserPopup">
+                           <i class="far fa-plus"></i> @Localizer["Button_New"]
+                       </a>
+                   </div>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive wan-cms__block-loader">
+                    <div class="wan-cms__loader" data-bind="visible:processing().getProcessing('SiwUsers')">
+                        <div class="wan-cms__loader__content">
+                            <img src="~/Theme/userlayout/assets/img/icon/icon-loading.png" width="50" class="navbar-logo" alt="logo" />
+                        </div>
+                    </div>
+                        <table class="table table-bordered">
+                            <thead class="table table-bordered table-stripped">
+                                <tr class="bg-pale-secondary">
+                                    <th style="text-align: center; font-weight:bold;">
+                                         @Localizer["Label_Table_OrderNo"]
+                                    </th>
+                                  <th style="cursor:pointer; font-weight:bold;" data-bind="click:function(){startSort('walletID');}">@Localizer["Label_Table_WalletID"]  
+                                      <div data-bind="visible:sortedField()!=null&&sortedField().name()=='walletID'" class="text-right">
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='walletID'&&sortedField().direction()==false" ><i class="glyphicon glyphicon-chevron-up"></i></a>
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='walletID'&&sortedField().direction()==true" ><i class="glyphicon glyphicon-chevron-down"></i></a>
+                                      </div>
+                                  </th>
+                                  <th style="cursor:pointer; font-weight:bold;" data-bind="click:function(){startSort('userCode');}">@Localizer["Label_Table_UserCode"]  
+                                      <div data-bind="visible:sortedField()!=null&&sortedField().name()=='userCode'" class="text-right">
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='userCode'&&sortedField().direction()==false" ><i class="glyphicon glyphicon-chevron-up"></i></a>
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='userCode'&&sortedField().direction()==true" ><i class="glyphicon glyphicon-chevron-down"></i></a>
+                                      </div>
+                                  </th>
+                                  <th style="cursor:pointer; font-weight:bold;" data-bind="click:function(){startSort('status');}">@Localizer["Label_Table_Status"]  
+                                      <div data-bind="visible:sortedField()!=null&&sortedField().name()=='status'" class="text-right">
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='status'&&sortedField().direction()==false" ><i class="glyphicon glyphicon-chevron-up"></i></a>
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='status'&&sortedField().direction()==true" ><i class="glyphicon glyphicon-chevron-down"></i></a>
+                                      </div>
+                                  </th>
+                                  <th style="cursor:pointer; font-weight:bold;" data-bind="click:function(){startSort('walletTokenSiw');}">@Localizer["Label_Table_WalletTokenSiw"]  
+                                      <div data-bind="visible:sortedField()!=null&&sortedField().name()=='walletTokenSiw'" class="text-right">
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='walletTokenSiw'&&sortedField().direction()==false" ><i class="glyphicon glyphicon-chevron-up"></i></a>
+                                          <a data-bind="visible:sortedField()!=null&&sortedField().name()=='walletTokenSiw'&&sortedField().direction()==true" ><i class="glyphicon glyphicon-chevron-down"></i></a>
+                                      </div>
+                                  </th>
+                                  <th style="text-align: center; font-weight:bold;">
+                                  </th>
+                              </tr>
+                          </thead>
+                          <tbody data-bind="template:{name:'SiwUserItem',foreach:arrSiwUser}">
+                          </tbody>
+                          <tfoot>
+                              <tr>
+                                  <td colspan="6">
+                                <div class="row">
+                                      <div class="col-md-12">
+                                          <div class="text-right" data-bind="with:paging">
+                                              <ul class="pagination">
+                                                 <li> <a data-bind="html:'@Localizer["Text_TotalItems"] <b>' + totalItems() + '</b> @Localizer["Text_ItemName"] &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; @Localizer["Text_Page"] <b>'+ pageIndex() + '/' + totalPages() +'</b>'"></a></li>
+                                                 <li data-bind="css:{disabled:pageIndex()==0}"><a data-bind="click:$parent.gotoPrevPage">&laquo;</a></li>
+                                                 <!-- ko foreach:arrPage -->
+                                                 <li data-bind="css:{active:$parent.pageIndex()==$data}"><a data-bind="html:$data ,click:$parents[1].gotoPage" ></a></li>
+                                                 <!-- /ko -->
+                                                 <li data-bind="css:{disabled:pageIndex()>=totalPages()}"><a data-bind="click:$parent.gotoNextPage">&raquo;</a></li>
+                                              </ul>
+                                          </div>
+                                      </div>
+                                   </div>
+                                  </td>
+                              </tr>
+                          </tfoot>
+                      </table>
+                    </div>
+                 </div>
+             </div>
+     </div>
+</section>
+<script id="SiwUserItem" type="text/html">
+<tr>
+     <td style="text-align:center" >
+         <span data-bind="html:(($parent.paging().pageIndex()-1)*$parent.paging().pageSize() + $index()+1)"></span>
+     </td>
+        <td>
+             <span  data-bind="html:walletName" ></span>
+        </td>
+        <td>
+            <span data-bind="html:userCode" ></span>
+        </td>
+        <td>
+            <span data-bind="html:status" ></span>
+        </td>
+        <td style="text-align:right;">
+            <span data-bind="numberhtml:walletTokenSiw" ></span>
+        </td>
+     <td style="text-align:right">
+         <button class="btn btn-sm btn-primary" data-bind="visible:allowEdit, click:$root.startEditSiwUserPopup" title="@Localizer["Tooltip_Edit"]"><i class="far fa-pencil-alt"></i></button>
+         <button class="btn btn-sm btn-danger" data-bind="visible:allowRemove, click:$root.removeSiwUser" title="@Localizer["Tooltip_Remove"]"><i class="far fa-trash-alt"></i></button>
+     </td>
+</tr>
+</script>
+@section popup{
+   <div class="modal fade bs-example-modal-lg show" id="popupSiwUser" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@Localizer["SiwUser_Popup_Title"]</h4>
+                </div>
+                <div class="modal-body" data-bind="with:$root.siwUserVM">
+                    <div class="row" >
+                        <div class="col-md-12">
+                           <div data-bind="visible:processing().getProcessing('SiwUser')" class="row" style="z-index:2000;position:absolute; left:50%">
+                                <i class="fa fa-spin fa-refresh" style="font-size:20px;"></i>
+                           </div>
+                        </div>
+                    </div>
+                    <div class="row" data-bind="with:siwUser">
+                        <div class="col">
+                        <form novalidate>
+                        <!-- ko if: isEdit()===false -->
+        <div class="row"> 
+            <div class="col-lg-6 col-12"> 
+                       <div>
+                           <label class="control-label">@Localizer["Label_Table_WalletID"]</label>
+                           <span data-bind="html:WalletName"></span>
+                       </div>
+                       <div>
+                           <label class="control-label">@Localizer["Label_Table_UserCode"]</label>
+                           <span data-bind="html:userCode"></span>
+                       </div>
+                       <div>
+                           <label class="control-label">@Localizer["Label_Table_Status"]</label>
+                           <span data-bind="html:status"></span>
+                       </div>
+                       <div>
+                           <label class="control-label">@Localizer["Label_Table_WalletTokenSiw"]</label>
+                           <span data-bind="html:walletTokenSiw"></span>
+                       </div>
+            </div> 
+        </div> 
+                        <!-- /ko -->
+                        <!-- ko if: isEdit()===true -->
+        <div class="row"> 
+                       <div class="col-lg-6 col-12">
+                           <label class="control-label" for="ctrlWalletID">@Localizer["Label_Table_WalletID"]</label>
+             <select data-bind="options: $root.walletsVM().arrWallet,optionsText:'name',optionsValue:'walletID',optionsCaption:'@Localizer["SiwUser_Placeholder_Table_WalletID"]',value:walletID" class="form-control" ></select>
+                       </div>
+                       <div class="col-lg-6 col-12">
+                       <div class="form-group">
+                           <label class="control-label" for="ctrlUserCode">@Localizer["Label_Table_UserCode"]</label>
+                           <input type="text" class="form-control"  id="ctrlUserCode" data-bind="value:userCode"/>
+                       </div>
+                       </div>
+                       <div class="col-lg-6 col-12">
+                       <div class="form-group">
+                           <label class="control-label" for="ctrlStatus">@Localizer["Label_Table_Status"]</label>
+                           <input type="text" class="form-control"  id="ctrlStatus" data-bind="value:status"/>
+                       </div>
+                       </div>
+                       <div class="col-lg-6 col-12">
+                       <div class="form-group" data-bind="css:{'has-error':valManager().get('walletTokenSiw')().isValid()==false&&valManager().get('walletTokenSiw')().valMsg()!='','has-success':valManager().get('walletTokenSiw')().isValid()==true&&valManager().get('walletTokenSiw')().valMsg()!=''}">
+                            <label class="control-label" for="ctrlWalletTokenSiw">@Localizer["Label_Table_WalletTokenSiw"] <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control"  id="ctrlWalletTokenSiw" data-bind="value:walletTokenSiw, event: {change: $root.onChangeSiwUser_WalletTokenSiw}"/>
+                            <small class="help-block" data-bind="visible: valManager().get('walletTokenSiw')().isValid()==false&&valManager().get('walletTokenSiw')().valMsg()!='', html: valManager().get('walletTokenSiw')().valMsg"></small>
+                       </div>
+                       </div>
+        </div> 
+                        <!-- /ko -->
+                        </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="text-right" data-bind="with:$root.siwUserVM().siwUser" >
+                        <button type="button" class="btn btn-success" data-bind="click:$root.finishEditSiwUserPopup">@Localizer["SiwUser_Popup_Button_Save"]</button>&nbsp;
+                        <button type="button" class="btn  btn-danger" data-dismiss="modal">
+                            @Localizer["SiwUser_Popup_Button_Cancel"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section scripts{
+    <partial name="_AdminJScript" />
+}

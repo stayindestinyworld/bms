@@ -1,0 +1,113 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_SiwLayout.cshtml";
+}
+@section styleContent{
+}
+<div class="usermenu-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="usermenu-inner">
+                    <div class="left-area">
+                        <a class="navbar-brand" href="">
+                            <img class="show-logo" width="200px" src="~/siw/img/logo/logo-siw.png" alt="Logo img">
+                        </a>
+                    </div>
+                    <!--<div class="right-area">
+                        <span><span class="wallet-icon me-1 wallet"><i class="fas fa-wallet"></i></span></span>-->
+                    <!--ko if: self.checkWallet.length == 0-->
+                    <!--<a id="connect-wallet" href="#" data-bind="click: $root.clickConnectWallet" class="bg-button ">Connect Wallet</a>-->
+                    <!--/ko-->
+                    <!--ko ifnot: self.checkWallet.length == 0-->
+                    <!--<a id="disconnect-wallet" href="#" data-bind="click: $root.clickDisconnectWallet" class="bg-button ">Disconnect</a>-->
+                    <!--/ko-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="user-main-dashboard" style="height: 700px;">
+    <div class="container" style="padding-top: 20px;">
+        <div class="row">
+            <div class="col-lg-1">
+                <aside>
+                    <div style="text-align:right;">
+                        <div style=" padding-top: 10px;" class="s-a">
+                            <img width="60" style="padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+              
+                        </div>
+                        <div style=" padding-top: 10px;" class="s-a">
+                            <img width="60" style="padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+                         
+                        </div>
+                        <div style=" padding-top: 10px;" class="s-a">
+                            <img width="60" style="padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+                          
+                        </div>
+                        <div style=" padding-top: 10px;" class="s-a">
+                            <img width="60" style="padding: 6px; box-shadow: inset 0px 0px 3px 1px #00a2ff; border-radius: 4px;" src="~/siw/img/head.png" alt="">
+                          
+                        </div>
+                    </div>
+                </aside>
+            </div>
+            <div class="col-lg-6">
+                <div class="main-box">
+                    <div class="game-info">
+                        <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                        <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                        <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                        <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                        <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                        <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+                        <img style="width: 100px; padding: 24px 10px 24px 10px; margin-bottom: 20px; " class="test-frame" src="~/siw/img/head.png" alt="">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <main class="text-center">
+                        <img width="150" src="~/siw/img/character.png"/>
+                </main>
+                <div class="info-character-area">
+                    <h5>Name</h5>
+                </div>
+                <div class="info-character-area">
+                    <h5>Brought to Molaka in: Oct 21, 2021</h5>
+                </div>
+                <div class="info-character-area">
+                    <h5>ID#xxxx</h5>
+                </div>
+                <hr />
+                <div class="info-character-area">
+                    <h5>Rariry Stat: SHA256 (5%)</h5>
+                </div>
+                <hr />
+                <div class="info-character-area">
+                    <h5>Hunger: </h5> <span>150</span>
+                </div>
+                <div class="info-character-area">
+                    <h5>Friendly: </h5> <span>35</span>
+                </div>
+                <div class="info-character-area">
+                    <h5>Experience: </h5> <span>100</span>
+                </div>
+                <hr />
+                <a href="#" style="color: #b7afff; box-shadow: inset 0px 0px 6px 3px #00a2ff; padding: 10px 25px;">Purchase</a>
+            </div>
+        </div>
+    </div>
+</section>
+@section popup{
+}
+@section scripts{
+    <partial name="_AuctionVillage_JScript"/>
+    <script type="text/javascript">
+        var mv = new SiwUserAuctionVillageViewModel();
+        mv.initData();
+        ko.applyBindings(mv);
+    </script>
+}

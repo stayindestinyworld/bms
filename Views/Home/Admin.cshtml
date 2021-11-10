@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    Layout = "~/Views/Shared/_AdminLayoutver2.cshtml";
+}
+@section styleContent{
+}
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <!-- Default box -->
+            <div class="box">
+                <div class="box-body">
+                    <img class="img-fluid" src="~/Theme/images/placeholder6.png" alt="...">
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="row align-items-center">
+                        <div class="col-lg-4 col-md-5">
+                            <div class="row">
+                                <div class="col-12">
+                                    <span class="font-size-40">
+                                        <a class="weatherwidget-io" href="https://forecast7.com/en/14d06108d28/vietnam/" data-icons="Climacons Animated" data-mode="Current" data-textcolor="#67757c" data-highcolor="#ffb4b4" data-lowcolor="#93bffe" data-suncolor="#febc2f" data-cloudcolor="#93bffe" data-cloudfill="#fff" data-raincolor="#ffffff">Vietnam</a>
+                                        <script>
+                                            !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
+                                        </script>
+                                    </span>
+                                    <p class="font-size-18 mb-0 text-center" id="date"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8 col-md-7">
+                            <div class="row no-space text-center">
+                                <div class="col-12">
+                                    <a class="weatherwidget-io" href="https://forecast7.com/en/14d06108d28/vietnam/" data-icons="Climacons Animated" data-mode="Forecast" data-accent="rgba(238, 238, 238, 0.62)" data-highcolor="#ffb4b4" data-lowcolor="#93bffe" data-suncolor="#febc2f" data-cloudcolor="#93bffe" data-cloudfill="#fff" data-raincolor="#ffffff">Vietnam</a>
+                                    <script>
+                                        !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = 'https://weatherwidget.io/js/widget.min.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'weatherwidget-io-js');
+                                    </script>
+                                </div>
+                             
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-footer-->
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+</section>
+<script>
+    n = new Date();
+    var day = ["", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+
+    y = n.getFullYear();
+    m = n.getMonth() + 1;
+    d = n.getDate();
+    day = day[n.getDay()];
+    document.getElementById("date").innerHTML = day + "  " + d + "/" + m + "/" + y;
+</script>
+
+
+
+@section popup{
+
+}
+@section scripts{
+
+}

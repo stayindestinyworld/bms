@@ -1,0 +1,153 @@
+<partial name="_CommonJScript" />
+<partial name="_FormatJScript" />
+<partial name="_ValidateJScript" />
+<partial name="_APIJScript" />
+<script type="text/javascript" src="~/Viewmodel/SiwUser/_SiwUserJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwUser/_SiwUserPageViewModelsJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwUser/_SiwUserViewModelJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwAttendance/_SiwAttendanceJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwAttendance/_SiwAttendanceViewModelsJScript.js"></script>
+<script type="text/javascript">
+    var AdminViewModel = function () {
+        var self = this;
+        self.processing = ko.observable(new ModelProcessing());
+        self.transition = ko.observable(new ModelTransition());
+        self.siwUsersVM = ko.observable(null);
+        self.siwUserVM = ko.observable(null);
+        self.walletsVM = ko.observable(null);
+        self.siwAttendancesVM = ko.observable(null);
+        self.initData = function () {
+
+            //define view model
+
+            var siwUsersVM = new SiwUsersPageViewModel();
+            siwUsersVM.initModel(self.transition, self.processing);
+            self.siwUsersVM(siwUsersVM);
+
+            var siwAttendancesVM = new SiwAttendancesViewModel();
+            siwAttendancesVM.initModel(self.transition, self.processing);
+            self.siwAttendancesVM(siwAttendancesVM);
+
+            var siwUserVM = new SiwUserViewModel();
+            siwUserVM.initModel(self.transition, self.processing);
+            self.siwUserVM(siwUserVM);
+
+            //int main view model
+            self.siwUsersVM().initData();
+        };
+        self.startEditSiwUser = function (item) {
+            self.siwUsersVM().startEditSiwUser(item);
+        };
+        self.clickRandom = function () {
+            self.siwAttendancesVM().setSearchParam("random", "key");
+            self.siwAttendancesVM().initData();
+        }
+        self.finishEditSiwUser = function (item) {
+            self.checkValSiwUser("All", item);
+            if (item.valManager().isValid()) {
+                self.siwUsersVM().setFFSave(function () {
+                });
+                self.siwUsersVM().finishEditSiwUser(item);
+            } else {
+                $('.validateinput:first').focus();
+            }
+        };
+        self.startEditSiwUserPopup = function (item) {
+            self.siwUserVM().siwUser(item);
+            self.siwUserVM().startEditSiwUser(self.siwUserVM().siwUser());
+            $('#popupSiwUser').on('hide.bs.modal', function (e) {
+                if (e.target.id == "popupSiwUser") {
+                    if (self.siwUserVM().siwUser().isEdit()) {
+                        self.siwUsersVM().cancelEditSiwUser(self.siwUserVM().siwUser());
+                    }
+                }
+            });
+            $("#popupSiwUser").modal("show");
+        };
+        self.startAddSiwUserPopup = function () {
+            self.siwUsersVM().setFFInitNew(function () {
+                self.siwUserVM().siwUser(self.siwUsersVM().arrSiwUser()[0]);
+                $('#popupSiwUser').on('hide.bs.modal', function (e) {
+                    if (e.target.id == "popupSiwUser") {
+                        if (self.siwUserVM().siwUser().isEdit()) {
+                            self.siwUsersVM().cancelEditSiwUser(self.siwUserVM().siwUser());
+                        }
+                    }
+                });
+                $("#popupSiwUser").modal("show");
+            });
+            self.siwUsersVM().startAddSiwUser();
+        };
+        self.finishEditSiwUserPopup = function (item) {
+            self.checkValSiwUser("All", item);
+            if (item.valManager().isValid()) {
+                self.siwUsersVM().setFFSave(function () {
+                    $("#popupSiwUser").modal("hide");
+                });
+                self.siwUsersVM().finishEditSiwUser(self.siwUserVM().siwUser());
+            } else {
+                //$('.validateinput:first').focus();
+            }
+        };
+        self.cancelEditSiwUser = function (item) {
+            self.siwUsersVM().cancelEditSiwUser(item);
+        };
+        self.removeSiwUser = function (item) {
+            self.siwUsersVM().removeSiwUser(item);
+        };
+        self.checkValSiwUser = function (caseName, siwUser) {
+            if (caseName != "All") {
+                //logic for validate
+                ValSiwUser(caseName, siwUser);
+                //end logic
+            } else {
+                siwUser.valManager().reset();
+                if (siwUser.valManager().arrValidateField().length == 0) {
+                    siwUser.valManager().isValid(true);
+                } else {
+                    ko.utils.arrayForEach(siwUser.valManager().arrValidateField(), function (valField) {
+                        ValSiwUser(valField.name(), siwUser);
+                    });
+                }
+            }
+        };
+        function ValSiwUser(fieldName, item) {
+            switch (fieldName) {
+                case "walletTokenSiw":
+                    if (item.walletTokenSiw() != null && isNaN(item.walletTokenSiw())) {
+                        item.valManager().set(fieldName, false, "Invalid");
+                    }
+                    else {
+                        if (item.walletTokenSiw() != 0 && (item.walletTokenSiw() == "" || item.walletTokenSiw() == null)) {
+                            item.valManager().set(fieldName, false, "*");
+                        }
+                        else {
+                            item.valManager().set(fieldName, true, "");
+                        }
+                    }
+                    break;
+            }
+        }
+        self.onChangeSiwUser_WalletTokenSiw = function (siwUser) {
+            if (self.processing().completed() == 100) {
+                self.checkValSiwUser("walletTokenSiw", siwUser);
+            }
+        };
+        //self.checkEditingSiwUser = function () {
+        //    var isEdit = false;
+        //    if(self.siwUserVM().siwUser() != null)
+        //    {
+        //        isEdit = self.siwUserVM().siwUser().isEdit();
+        //    }
+        //    return isEdit;
+        //};
+        //window.onbeforeunload = function () {
+        //    if(self.checkEditingSiwUser()) {
+        //        return "Do you wish to leave this page? Any unsaved data will be deleted.";
+        //    }
+        //};
+    };
+    var mv = new AdminViewModel();
+    mv.initData();
+    ko.applyBindings(mv);
+</script>

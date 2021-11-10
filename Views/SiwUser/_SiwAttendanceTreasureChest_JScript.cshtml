@@ -1,0 +1,369 @@
+<partial name="_CommonJScript" />
+<partial name="_FormatJScript" />
+<partial name="_ValidateJScript" />
+<partial name="_APIJScript" />
+<partial name="_SiwAttendanceTreasureChestJScript" />
+<partial name="_SiwAttendanceTreasureChestViewModelJScript" />
+<script type="text/javascript" src="~/Viewmodel/SiwAttendance/_SiwAttendanceJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwAttendance/_SiwAttendanceViewModelJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwHistoryClaimReward/_SiwHistoryClaimRewardJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwHistoryClaimReward/_SiwHistoryClaimRewardViewModelJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwClaimAttendance/_SiwClaimAttendanceJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwClaimAttendance/_SiwClaimAttendancePageViewModelsJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwUser/_SiwUserJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwUser/_SiwUserViewModelJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwMyBackPack/_SiwMyBackPackJScript.js"></script>
+<script type="text/javascript" src="~/Viewmodel/SiwMyBackPack/_SiwMyBackPackViewModelJScript.js"></script>
+<script type="text/javascript">
+    var SiwUserSiwAttendanceTreasureChestViewModel = function () {
+        var self = this;
+        self.processing = ko.observable(new ModelProcessing());
+        self.transition = ko.observable(new ModelTransition());
+        self.siwAttendanceTreasureChestVM = ko.observable(null);
+        self.siwMyBackPackVM = ko.observable(null);
+        self.siwClaimAttendancesVM = ko.observable(null);
+        self.walletID = ko.observable(null);
+        self.confirmWallet = ko.observable(null);
+        self.twitter = ko.observable(null);
+        self.linkRetweet = ko.observable(null);
+        self.siwAttendanceVM = ko.observable(null);
+        self.test = ko.observable(null);
+        self.siwHistoryClaimRewardVM = ko.observable(null);
+        self.siwUserVM = ko.observable(null);
+        self.shortWallet = ko.observable(null);
+        self.point = ko.observable("+10 Mola");
+        const showWallet = document.querySelector(".wallet");
+
+        self.initData = function () {
+            var siwAttendanceTreasureChestVM = new SiwAttendanceTreasureChestViewModel();
+            siwAttendanceTreasureChestVM.initModel(self.transition, self.processing);
+            self.siwAttendanceTreasureChestVM(siwAttendanceTreasureChestVM);
+            var siwUserVM = new SiwUserViewModel();
+            siwUserVM.initModel(self.transition, self.processing);
+            self.siwUserVM(siwUserVM);
+            var siwMyBackPackVM = new SiwMyBackPackViewModel();
+            siwMyBackPackVM.initModel(self.transition, self.processing);
+            self.siwMyBackPackVM(siwMyBackPackVM);
+            var siwClaimAttendancesVM = new SiwClaimAttendancesPageViewModel();
+            siwClaimAttendancesVM.initModel(self.transition, self.processing);
+            self.siwClaimAttendancesVM(siwClaimAttendancesVM);
+            var siwAttendanceVM = new SiwAttendanceViewModel();
+            siwAttendanceVM.initModel(self.transition, self.processing);
+            self.siwAttendanceVM(siwAttendanceVM);
+            var siwHistoryClaimRewardVM = new SiwHistoryClaimRewardViewModel();
+            siwHistoryClaimRewardVM.initModel(self.transition, self.processing);
+            self.siwHistoryClaimRewardVM(siwHistoryClaimRewardVM);
+            //int main view model
+            self.siwAttendanceTreasureChestVM().setFFInit(function () {
+            });
+            /*   self.applyFilters();*/
+        };
+        self.checkWinnersList = function () {
+            $("#signin").modal("show");
+        };
+        self.clickClaim = function () {
+            if (self.walletID != null) {
+                if (self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().claim() == true && self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().hasClaim() == false) {
+                    $("#reward-item").modal("show");
+                    var randomClaim = Math.random();
+                    if (randomClaim < 0.985) {
+                        $("#item0").removeClass("hidden-content");
+                        $("#claim").empty();
+                        var newSiwHistoryClaimReward = new SiwHistoryClaimReward(
+                            0,
+                            self.walletID,
+                            self.shortWallet,
+                            "",
+                            "",
+                            true,
+                            null,
+                            self.point()
+                        );
+                        self.siwHistoryClaimRewardVM().siwHistoryClaimReward(newSiwHistoryClaimReward);
+                        self.siwHistoryClaimRewardVM().finishEditSiwHistoryClaimReward(self.siwHistoryClaimRewardVM().siwHistoryClaimReward());
+                        var newSiwUser = new SiwUser(
+                            self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().code(),
+                            self.walletID,
+                            "",
+                            "",
+                            0,
+                            "",
+                            "",
+                            "",
+                            "",
+                            self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().mola() + 10,
+                            self.shortWallet
+                        );
+                        self.siwUserVM().siwUser(newSiwUser);
+                        self.siwUserVM().finishEditSiwUser(self.siwUserVM().siwUser());
+                    }
+                    else if (randomClaim < 1) {
+                        var randomI = Math.random();
+                        if (randomI < 0.6) {
+                            var item1 = "<img width='70' src='../siw/img/icon/siw-icon-exp.png' alt='EXP' /> <p class='color-white'> EXP Bottle </p>";
+                            $("#item1").html(item1);
+                            $("#item1").removeClass("hidden-content");
+                            var newSiwHistoryClaimReward = new SiwHistoryClaimReward(
+                                0,
+                                self.walletID,
+                                self.shortWallet,
+                                "",
+                                "",
+                                true,
+                                null,
+                                "EXP Bottle"
+                            );
+                            self.siwHistoryClaimRewardVM().siwHistoryClaimReward(newSiwHistoryClaimReward);
+                            self.siwHistoryClaimRewardVM().finishEditSiwHistoryClaimReward(self.siwHistoryClaimRewardVM().siwHistoryClaimReward());
+                            var newSiwMyBackPack = new SiwMyBackPack(
+                                0,
+                                "",
+                                "EXP Bottle",
+                                "",
+                                "",
+                                "https://static.destinyworld.io/prod.0.imagesiw/10d523b9-4139-40f6-867d-9d0fa708c4fe.png",
+                                0,
+                                self.walletID,
+                                self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().code(),
+                                self.shortWallet
+                            );
+                            self.siwMyBackPackVM().siwMyBackPack(newSiwMyBackPack);
+                            self.siwMyBackPackVM().finishEditSiwMyBackPack(self.siwMyBackPackVM().siwMyBackPack());
+                            $("#claim").empty();
+                        }
+                        else if (randomI < 0.8) {
+                            var item2 = "<img width='70' src='../siw/img/icon/siw-icon-hunger.png' alt='Hunger' /> <p class='color-white'> Hunger Bottle </p>";
+                            $("#item2").html(item2);
+                            $("#item2").removeClass("hidden-content");
+                            var newSiwHistoryClaimReward = new SiwHistoryClaimReward(
+                                0,
+                                self.walletID,
+                                self.shortWallet,
+                                "",
+                                "",
+                                true,
+                                null,
+                                "Hunger Bottle"
+                            );
+                            self.siwHistoryClaimRewardVM().siwHistoryClaimReward(newSiwHistoryClaimReward);
+                            self.siwHistoryClaimRewardVM().finishEditSiwHistoryClaimReward(self.siwHistoryClaimRewardVM().siwHistoryClaimReward());
+                            var newSiwMyBackPack = new SiwMyBackPack(
+                                0,
+                                "",
+                                "Hunger Bottle",
+                                "",
+                                "",
+                                "https://static.destinyworld.io/prod.0.imagesiw/088c39c5-f3b1-42c4-8dce-2fcbcb6a23b1.png",
+                                0,
+                                self.walletID,
+                                self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().code(),
+                                self.shortWallet
+                            );
+                            self.siwMyBackPackVM().siwMyBackPack(newSiwMyBackPack);
+                            self.siwMyBackPackVM().finishEditSiwMyBackPack(self.siwMyBackPackVM().siwMyBackPack());
+                            $("#claim").empty();
+                        } else if (randomI < 1) {
+                            var item3 = "<img width='70' src='../siw/img/icon/siw-icon-friendly.png' alt='Friendly' /> <p class='color-white'> Friendly Bottle </p>";
+                            $("#item3").html(item3);
+                            $("#item3").removeClass("hidden-content");
+                            var newSiwHistoryClaimReward = new SiwHistoryClaimReward(
+                                0,
+                                self.walletID,
+                                self.shortWallet,
+                                "",
+                                "",
+                                true,
+                                null,
+                                "Friendly Bottle"
+                            );
+                            self.siwHistoryClaimRewardVM().siwHistoryClaimReward(newSiwHistoryClaimReward);
+                            self.siwHistoryClaimRewardVM().finishEditSiwHistoryClaimReward(self.siwHistoryClaimRewardVM().siwHistoryClaimReward());
+                            var newSiwMyBackPack = new SiwMyBackPack(
+                                0,
+                                "",
+                                "Friendly Bottle",
+                                "",
+                                "",
+                                "https://static.destinyworld.io/prod.0.imagesiw/f73d0356-0fd3-4873-9677-90297b0e4817.png",
+                                0,
+                                self.walletID,
+                                self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().code(),
+                                self.shortWallet
+                            );
+                            self.siwMyBackPackVM().siwMyBackPack(newSiwMyBackPack);
+                            self.siwMyBackPackVM().finishEditSiwMyBackPack(self.siwMyBackPackVM().siwMyBackPack());
+                            $("#claim").empty();
+                        }
+                    }
+
+                } else {
+                    swal(SiwAtendanceTreasureChestLanguage.valTitleFail, SiwAtendanceTreasureChestLanguage.valFailClaim, "warning");
+                }
+            } else {
+                swal(SiwAtendanceTreasureChestLanguage.valTitleFail, SiwAtendanceTreasureChestLanguage.valFailWallet, "warning");
+            }
+        };
+
+        //Start chart function
+        async function checkChain(item) {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }],
+                });
+                if (switchError.code != 4902 && switchError.code != 4001) {
+                    getWallet();
+                }
+            } catch (switchError) {
+                if (switchError.code != 4902 && switchError.code != 4001) {
+                    getWallet();
+                }
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: '0x38',
+                                chainName: 'Binance Smart Chain Mainnet',
+                                blockExplorerUrls: ['https://bscscan.com/'],
+                                rpcUrls: ["https://bsc-dataseed.binance.org/"],
+                                nativeCurrency: {
+                                    name: 'Binance',
+                                    symbol: 'BNB',
+                                    decimals: 18,
+                                },
+                            }],
+                        });
+                        if (switchError.code != 4902 && switchError.code != 4001) {
+                            getWallet();
+                        }
+                    } catch (addError) {
+                        console.error(addError);
+                    }
+                }
+            }
+        }
+        async function getWallet() {
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0];
+            fullString = account;
+            secondString = account.slice(-4);
+            firstString = account.substring(0, 4);
+            const accountWallet = firstString + "..." + secondString;
+            $('#walletProfile').removeClass('hidden-content');
+            $('#icon-wallet').removeClass('hidden-content');
+            showWallet.innerHTML = accountWallet;
+            self.walletID = fullString;
+            self.shortWallet = accountWallet;
+            $('#connect-wallet').addClass('hidden-content');
+            self.siwClaimAttendancesVM().setFFInit(function () {
+                if (self.siwClaimAttendancesVM().arrSiwClaimAttendance().length != null && self.siwClaimAttendancesVM().arrSiwClaimAttendance().length > 0) {
+                    $("#winners-list").removeClass("hidden-content");
+                }
+            });
+            self.siwAttendanceTreasureChestVM().setFFInit(function () {
+                if (self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().checkAttendance() == false && $('#walletCheck').text().length > 0) {
+                    if (self.siwClaimAttendancesVM().arrSiwClaimAttendance().length == 0) {
+                        $('#form-airdrop').removeClass('hidden-content');
+                    } else {
+                        $('#expired-time').removeClass('hidden-content');
+                    }
+                } else {
+                    $('#registered').removeClass('hidden-content');
+                }
+                if (self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().wallet() == null || self.siwAttendanceTreasureChestVM().siwAttendanceTreasureChest().wallet() == "") {
+                    var newSiwUser = new SiwUser(
+                        0,
+                        self.walletID,
+                        "",
+                        "",
+                        0,
+                        "",
+                        "",
+                        "",
+                        "",
+                        0,
+                        self.shortWallet
+                    );
+                    self.siwUserVM().siwUser(newSiwUser);
+                    self.siwUserVM().finishEditSiwUser(self.siwUserVM().siwUser());
+                }
+            });
+
+            self.siwClaimAttendancesVM().initWinnerData();
+            self.siwAttendanceTreasureChestVM().setSearchParam("walletID", fullString);
+            self.applyFilters();
+        }
+        self.clickConnectWallet = function () {
+            if (window.ethereum) {
+                checkChain();
+            } else {
+                swal(SiwAtendanceTreasureChestLanguage.valTitleFail, SiwAtendanceTreasureChestLanguage.valMessageMetamask, "warning");
+            }
+        };
+        ethereum.on('chainChanged', () => {
+            window.location.reload();
+        });
+        window.ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length > 0) {
+                window.location.reload();
+            } else {
+                window.location.reload();
+            }
+        });
+        self.submitAttendance = function (item) {
+            if (item.walletID != null) {
+                if (item.confirmWallet() == null && item.twitter() == null && item.linkRetweet() == null) {
+                    swal(SiwAtendanceTreasureChestLanguage.valTitleEmptyFail, SiwAtendanceTreasureChestLanguage.valMessageEmpty, "warning");
+                } else if (!(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(item.twitter()))) {
+                    swal(SiwAtendanceTreasureChestLanguage.valTitleEmptyFail, SiwAtendanceTreasureChestLanguage.valMessageUrl, "warning");
+                } else if (!(/^(http|https|ftp):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i.test(item.linkRetweet()))) {
+                    swal(SiwAtendanceTreasureChestLanguage.valTitleEmptyFail, SiwAtendanceTreasureChestLanguage.valMessageRetweetUrl, "warning");
+                }
+                else {
+                    var newSiwAttendance = new SiwAttendance(
+                        0,
+                        item.walletID,
+                        item.confirmWallet(),
+                        "",
+                        "",
+                        "",
+                        true,
+                        null,
+                        item.twitter(),
+                        item.linkRetweet(),
+                        item.shortWallet()
+                    );
+                    self.siwAttendanceVM().siwAttendance(newSiwAttendance);
+                    self.siwAttendanceVM().finishEditSiwAttendance(self.siwAttendanceVM().siwAttendance());
+                    self.siwAttendanceVM().setFFSave(function () {
+                        self.confirmWallet(null);
+                        self.linkRetweet(null);
+                        self.twitter(null);
+                        $('#form-airdrop').addClass('hidden-content');
+                        $('#registered').removeClass('hidden-content');
+                    });
+                }
+            }
+        };
+        //Start chart function
+        //End chart function
+        //Start filter function
+        self.applyFilters = function () {
+            GetFilterExpression();
+            self.siwAttendanceTreasureChestVM().initData();
+        };
+        self.clearFilters = function () {
+            ResetFilterExpression();
+            self.applyFilters();
+        };
+        function GetFilterExpression() {
+        }
+        function ResetFilterExpression() {
+            ko.utils.arrayForEach(self.siwAttendanceTreasureChestVM().arrSearchParam(), function (p) {
+                p.value(null);
+            });
+        }
+        //End filter function
+    };
+</script>

@@ -1,0 +1,93 @@
+<script type="text/javascript">
+var AuctionVillageViewModel = function(){
+    var self = this;
+    self.getUrl = {
+        getAuctionVillage : "/SiwUser/GetAuctionVillage",
+    };
+    self.auctionVillage = ko.observable(null);
+    self.transition = ko.observable(null);
+    self.processing = ko.observable(null);
+    self.ffInit = ko.observable(null);
+    self.sortedField = ko.observable(null);
+    self.arrSearchParam = ko.observableArray([]);
+    self.initModel = function(transition,processing){
+        self.transition = transition;
+        self.processing = processing;
+    };
+    self.setFFInit = function(ffinit){
+        self.ffInit(ffinit);
+    };
+    self.initData =function(){
+        InitAuctionVillage();
+    };
+    self.initLocalData = function (data) {
+        self.auctionVillage(self.convertDataToAuctionVillage(data));
+        if (self.ffInit() != null) self.ffInit()();
+    };
+    function InitAuctionVillage(){
+        self.processing().setProcessing("AuctionVillage",true);
+        var postParam = CollectGetParams();
+        var json = JSON.stringify(postParam);
+        CallAPI(
+            self.getUrl.getAuctionVillage, 
+            json,
+            "POST",
+            FinishInitAuctionVillage,
+            CallAPIFail
+        );
+    }
+    function FinishInitAuctionVillage(data){
+        if(data.result == "Success"){
+           self.auctionVillage(self.convertDataToAuctionVillage(data.auctionVillage));
+        }
+        if (self.ffInit() != null) self.ffInit()();
+        self.processing().setProcessing("AuctionVillage",false);
+    }
+    self.convertDataToAuctionVillage = function(dataItem){
+        var item = new AuctionVillage(
+                        //end table database field
+                        );
+         return item;
+    }
+     function CallAPIFail(jqXHR, textStatus, errorThrown) {
+         self.processing().setProcessing("AuctionVillage", false);
+         swal("", Language.CallAPIFailMessage,"warning");
+     }
+    function CollectGetParams(){
+        var postParam = {
+           searchParams : null
+        };
+        if(self.sortedField()!=null){
+           var sparam = ko.utils.arrayFirst(self.arrSearchParam(),function(param){return param.key() == "sortedField"});
+           if(sparam!=null){
+               sparam.value(self.SortedField().Name());
+               var sparam1 = ko.utils.arrayFirst(self.arrSearchParam(),function(param){return param.key() == "sortedDirection"});
+               sparam1.value(self.sortedField().direction());
+           }else{
+               self.arrSearchParam.push(new SearchParam("sortedField",self.sortedField().name()));
+               self.arrSearchParam.push(new SearchParam("sortedDirection",self.sortedField().direction()));
+           }
+        }
+        if(self.arrSearchParam().length>0){
+           postParam.searchParams = ko.toJS(self.arrSearchParam());
+        }
+        return postParam;
+    }
+    self.getSearchParam = function (key) {
+        var param = ko.utils.arrayFirst(self.arrSearchParam(), function (param1) { return param1.key() == key; });
+        if (param == null)
+        {
+            param = new SearchParam(key, null);
+            self.arrSearchParam.push(param);
+        }
+        return param;
+    };
+    self.setSearchParam = function (key,value) {
+        var param = ko.utils.arrayFirst(self.arrSearchParam(), function (param1) { return param1.key() == key; });
+        if (param == null) {
+            param = new SearchParam(key, value);
+            self.arrSearchParam.push(param);
+        }else{ param.value(value);}
+    };
+};
+</script>
