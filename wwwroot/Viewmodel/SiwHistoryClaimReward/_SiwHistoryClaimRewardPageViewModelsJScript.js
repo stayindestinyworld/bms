@@ -1,10 +1,10 @@
-var SiwUsersPageViewModel = function () {
+var SiwHistoryClaimRewardsPageViewModel = function () {
     var self = this;
     self.getUrl = {
-        getSiwUsers   : "/SiwUser/GetPage",
-        saveSiwUser   : "/SiwUser/Save",
-        removeSiwUser : "/SiwUser/Remove",
-        getInit : "/SiwUser/GetInit",
+        getSiwHistoryClaimRewards   : "/SiwHistoryClaimReward/GetPage",
+        saveSiwHistoryClaimReward   : "/SiwHistoryClaimReward/Save",
+        removeSiwHistoryClaimReward : "/SiwHistoryClaimReward/Remove",
+        getInit : "/SiwHistoryClaimReward/GetInit",
     };
     self.processing = ko.observable(null);
     self.transition = ko.observable(null);
@@ -15,8 +15,8 @@ var SiwUsersPageViewModel = function () {
     self.paging = ko.observable(new ItemPaging(1, 20, 0));
     self.sortedField = ko.observable(null);
     self.arrSearchParam = ko.observableArray([]);
-    self.arrSiwUser = ko.observableArray([]);
-    self.arrSSiwUser = ko.observableArray([]);
+    self.arrSiwHistoryClaimReward = ko.observableArray([]);
+    self.arrSSiwHistoryClaimReward = ko.observableArray([]);
     self.actionOnLocal = ko.observable(false);
     //------- Init data for view model----------------------------
     self.initModel = function(transition,processing){
@@ -24,14 +24,14 @@ var SiwUsersPageViewModel = function () {
         self.processing = processing;
     };
     self.initData = function () {
-        InitSiwUsers();
+        InitSiwHistoryClaimRewards();
     };
     self.initLocalData = function (data) {
        var arrItem = ko.utils.arrayMap(data, function (item) {
-           return self.convertDataToSiwUser(item);
+           return self.convertDataToSiwHistoryClaimReward(item);
        });
-       self.arrSiwUser.removeAll();
-       self.arrSiwUser(arrItem);
+       self.arrSiwHistoryClaimReward.removeAll();
+       self.arrSiwHistoryClaimReward(arrItem);
        if(self.ffInit() != null) self.ffInit()();
     };
     self.setFFInit = function(ffInit){
@@ -47,29 +47,29 @@ var SiwUsersPageViewModel = function () {
         self.ffDelete(ffDelete);
     };
     //--------------- For Paging and Searching -----------------------------//
-    self.searchSiwUsers = function(){
-        InitSiwUsers();
+    self.searchSiwHistoryClaimRewards = function(){
+        InitSiwHistoryClaimRewards();
     };
-    self.resetSearchSiwUser = function() {
+    self.resetSearchSiwHistoryClaimReward = function() {
         self.setSearchParam("searchCode", null);
-        InitSiwUsers();
+        InitSiwHistoryClaimRewards();
     };
     self.gotoPage = function(page){
        if(page!=self.paging().pageIndex()){
            self.paging().pageIndex(page);
-           InitSiwUsers();
+           InitSiwHistoryClaimRewards();
        }
     };
     self.gotoNextPage = function(){
        if(self.paging().pageIndex()<self.paging().totalPages()){
            self.paging().pageIndex(self.paging().pageIndex()+1);
-           InitSiwUsers();
+           InitSiwHistoryClaimRewards();
        }
     };
     self.gotoPrevPage = function(){
         if(self.paging().pageIndex()>1){
             self.paging().pageIndex(self.paging().pageIndex()-1);
-            InitSiwUsers();
+            InitSiwHistoryClaimRewards();
         }
     };
     self.getSearchParam = function (key) {
@@ -90,27 +90,27 @@ var SiwUsersPageViewModel = function () {
     };
     //--------------- For Item -----------------------------//
     //--------------- Model Event ----------//
-    self.startAddSiwUser = function(){
-        self.processing().setProcessing("SiwUsers",true);
-        CallAPI(self.getUrl.getInit, null,"GET", FinishInitNewSiwUser);
+    self.startAddSiwHistoryClaimReward = function(){
+        self.processing().setProcessing("SiwHistoryClaimRewards",true);
+        CallAPI(self.getUrl.getInit, null,"GET", FinishInitNewSiwHistoryClaimReward);
     };
-    self.startEditSiwUser = function(item){
+    self.startEditSiwHistoryClaimReward = function(item){
         item.oldValue(ko.toJS(item));
         item.isEdit(true);
     };
-    self.finishEditSiwUser = function(item){
-        SaveSiwUser(item);
+    self.finishEditSiwHistoryClaimReward = function(item){
+        SaveSiwHistoryClaimReward(item);
     };
-    self.cancelEditSiwUser = function(item){
-        if(item.siwUserID()==null||item.siwUserID()==0){
-           self.arrSiwUser.remove(item);
+    self.cancelEditSiwHistoryClaimReward = function(item){
+        if(item.siwHistoryClaimRewardID()==null||item.siwHistoryClaimRewardID()==0){
+           self.arrSiwHistoryClaimReward.remove(item);
         }else{
-           ResetSiwUser(item);
+           ResetSiwHistoryClaimReward(item);
            item.isEdit(false);
          }
     };
-    self.removeSiwUser = function(item){
-        DeleteSiwUser(item);
+    self.removeSiwHistoryClaimReward = function(item){
+        DeleteSiwHistoryClaimReward(item);
     };
     self.startSort = function(field){
         if(self.sortedField()!=null){
@@ -124,54 +124,54 @@ var SiwUsersPageViewModel = function () {
             self.sortedField(new SortField(field,false));
         }
         self.paging().pageIndex(1);
-        InitSiwUsers();
+        InitSiwHistoryClaimRewards();
     };
     //--------------- Action Function ----------//
-    function FinishInitNewSiwUser(data){
+    function FinishInitNewSiwHistoryClaimReward(data){
        if(data.result =="Success"){
-           var item = self.convertDataToSiwUser(data.siwUser);
-           item.guid(data.siwUser.guid);
+           var item = self.convertDataToSiwHistoryClaimReward(data.siwHistoryClaimReward);
+           item.guid(data.siwHistoryClaimReward.guid);
            item.oldValue(ko.toJS(item));
            item.isEdit(true);
-           self.arrSiwUser.unshift(item);
+           self.arrSiwHistoryClaimReward.unshift(item);
        }
-       self.processing().setProcessing("SiwUsers",false);
+       self.processing().setProcessing("SiwHistoryClaimRewards",false);
        if(self.ffInitNew() != null) self.ffInitNew()();
     }
-    function InitSiwUsers()
+    function InitSiwHistoryClaimRewards()
     {
         if (self.actionOnLocal() == false)
         {
-            self.processing().setProcessing("SiwUsers", true);
+            self.processing().setProcessing("SiwHistoryClaimRewards", true);
             var postParam = CollectGetParams();
             var json = JSON.stringify(postParam);
             CallAPI(
-                self.getUrl.getSiwUsers,
+                self.getUrl.getSiwHistoryClaimRewards,
                 json,
                 "POST",
-                FinishInitSiwUsers,
+                FinishInitSiwHistoryClaimRewards,
                 CallAPIFail);
         }
         else
         {
-            if (self.arrSiwUser().length == 0)
+            if (self.arrSiwHistoryClaimReward().length == 0)
             {
-                self.processing().setProcessing("SiwUsers", true);
+                self.processing().setProcessing("SiwHistoryClaimRewards", true);
                 self.setSearchParam("isViewAll", true);
                 var postParam = CollectGetParams();
                 var json = JSON.stringify(postParam);
                 CallAPI(
-                    self.getUrl.getSiwUsers,
+                    self.getUrl.getSiwHistoryClaimRewards,
                     json,
                     "POST",
-                    FinishInitSiwUsers,
+                    FinishInitSiwHistoryClaimRewards,
                     CallAPIFail);
             }
             else
             {
-                self.processing().setProcessing("SiwUsers", true);
+                self.processing().setProcessing("SiwHistoryClaimRewards", true);
                 var searchCode = self.getSearchParam("searchCode").value();
-                var arrFilter = self.arrSiwUser();
+                var arrFilter = self.arrSiwHistoryClaimReward();
                 if (searchCode != null)
                 {
                     searchCode = GenSearchKeyword(searchCode);
@@ -180,64 +180,64 @@ var SiwUsersPageViewModel = function () {
                     });
                 }
                 var start = (self.paging().pageIndex() - 1) * self.paging().pageSize();
-                self.arrSSiwUser(arrFilter.slice(start, start + self.paging().pageSize()));
-                self.paging().resetPaging(self.paging().pageIndex(), self.paging().pageSize(), self.arrSiwUser().length);
+                self.arrSSiwHistoryClaimReward(arrFilter.slice(start, start + self.paging().pageSize()));
+                self.paging().resetPaging(self.paging().pageIndex(), self.paging().pageSize(), self.arrSiwHistoryClaimReward().length);
                 if (self.ffInit() != null) self.ffInit()();
-                self.processing().setProcessing("SiwUsers", false);
+                self.processing().setProcessing("SiwHistoryClaimRewards", false);
             }
         }
     }
-     function FinishInitSiwUsers(data){
+     function FinishInitSiwHistoryClaimRewards(data){
          if(data.result == "Success"){
-             var arrItem = ko.utils.arrayMap(data.siwUsers,function(item){
-                  return self.convertDataToSiwUser(item);
+             var arrItem = ko.utils.arrayMap(data.siwHistoryClaimRewards,function(item){
+                  return self.convertDataToSiwHistoryClaimReward(item);
              });
-             self.arrSiwUser.removeAll();
-             self.arrSiwUser(arrItem);
+             self.arrSiwHistoryClaimReward.removeAll();
+             self.arrSiwHistoryClaimReward(arrItem);
              self.paging().resetPaging(data.pageIndex,data.pageSize,data.totalCount);
          }
          //function run after init data
          if(self.ffInit() != null) self.ffInit()();
-         self.processing().setProcessing("SiwUsers",false);
+         self.processing().setProcessing("SiwHistoryClaimRewards",false);
      }
-     function SaveSiwUser(item){
-          if(ValidateSiwUser(item)){
-              self.processing().setProcessing("SiwUsers",true);
-              var json = JSON.stringify(ConvertSiwUserToPostObject(item));
+     function SaveSiwHistoryClaimReward(item){
+          if(ValidateSiwHistoryClaimReward(item)){
+              self.processing().setProcessing("SiwHistoryClaimRewards",true);
+              var json = JSON.stringify(ConvertSiwHistoryClaimRewardToPostObject(item));
               CallAPI(
-                  self.getUrl.saveSiwUser,
+                  self.getUrl.saveSiwHistoryClaimReward,
                   json,
                   "POST",
-                  FinishSaveSiwUser,
+                  FinishSaveSiwHistoryClaimReward,
                   CallAPIFail);
          }
      } 
-     function FinishSaveSiwUser(data) {
+     function FinishSaveSiwHistoryClaimReward(data) {
         if(data.result == "Success") {
             var item;
-            if(data.siwUserID != null && data.siwUserID != 0) {
-                item = ko.utils.arrayFirst(self.arrSiwUser(), function (item1) {
-                    return item1.siwUserID() == data.siwUserID;
+            if(data.siwHistoryClaimRewardID != null && data.siwHistoryClaimRewardID != 0) {
+                item = ko.utils.arrayFirst(self.arrSiwHistoryClaimReward(), function (item1) {
+                    return item1.siwHistoryClaimRewardID() == data.siwHistoryClaimRewardID;
                 });
             } else {
-                item = ko.utils.arrayFirst(self.arrSiwUser(), function (item1) {
+                item = ko.utils.arrayFirst(self.arrSiwHistoryClaimReward(), function (item1) {
                     return item1.guid() == data.guid;
                 });
             }
             if(item != null) {
-                if(item.siwUserID() == null || item.siwUserID() == 0) {
+                if(item.siwHistoryClaimRewardID() == null || item.siwHistoryClaimRewardID() == 0) {
                     self.paging().resetPaging(self.paging().pageIndex(), self.paging().pageSize(), self.paging().totalItems() + 1);
                 }
-                item.siwUserID(data.siwUser.siwUserID);
+                item.siwHistoryClaimRewardID(data.siwHistoryClaimReward.siwHistoryClaimRewardID);
                 item.isEdit(false);
             }
         } else {
             swal("", Language.SaveResultFailMessage, "warning");
         }
-        self.processing().setProcessing("SiwUsers", false);
+        self.processing().setProcessing("SiwHistoryClaimRewards", false);
         if(self.ffSave() != null) self.ffSave()();
      }
-     function DeleteSiwUser(item)
+     function DeleteSiwHistoryClaimReward(item)
      {
          swal({
          title: Language.DeleteConfirmTitle,
@@ -255,18 +255,18 @@ var SiwUsersPageViewModel = function () {
              {
                  if(item != null)
                  {
-                     if(item.siwUserID() == null || item.siwUserID() == 0)
+                     if(item.siwHistoryClaimRewardID() == null || item.siwHistoryClaimRewardID() == 0)
                      {
-                         self.arrSiwUser.remove(item);
+                         self.arrSiwHistoryClaimReward.remove(item);
                      }
                      else
                      {
-                         self.processing().setProcessing("SiwUsers", true);
+                         self.processing().setProcessing("SiwHistoryClaimRewards", true);
                          CallAPI(
-                             self.getUrl.removeSiwUser + "?id=" + item.siwUserID(),
+                             self.getUrl.removeSiwHistoryClaimReward + "?id=" + item.siwHistoryClaimRewardID(),
                              null,
                              "DELETE",
-                             FinishDeleteSiwUser,
+                             FinishDeleteSiwHistoryClaimReward,
                              CallAPIFail
                          );
                      }
@@ -274,69 +274,64 @@ var SiwUsersPageViewModel = function () {
              }
          });
      }
-     function FinishDeleteSiwUser(data) {
+     function FinishDeleteSiwHistoryClaimReward(data) {
          if(data.result == "Success") {
-             self.arrSiwUser.remove(function (item) { return item.siwUserID() == data.siwUserID; });
+             self.arrSiwHistoryClaimReward.remove(function (item) { return item.siwHistoryClaimRewardID() == data.siwHistoryClaimRewardID; });
              self.paging().resetPaging(self.paging().pageIndex(), self.paging().pageSize(), self.paging().totalItems() - 1);
          }
          else {
              swal(Language.DeleteResultFailMessage, "", "warning");
          }
-         self.processing().setProcessing("SiwUsers", false);
+         self.processing().setProcessing("SiwHistoryClaimRewards", false);
          if(self.ffDelete() != null) self.ffDelete()();
      }
      function CallAPIFail(jqXHR, textStatus, errorThrown) {
-         self.processing().setProcessing("SiwUser", false);
+         self.processing().setProcessing("SiwHistoryClaimReward", false);
          swal("", Language.CallAPIFailMessage,"warning");
      }
-     function ResetSiwUser(item){
-         item.siwUserID(item.oldValue().siwUserID);
+     function ResetSiwHistoryClaimReward(item){
+         item.siwHistoryClaimRewardID(item.oldValue().siwHistoryClaimRewardID);
          item.walletID(item.oldValue().walletID);
+         item.shortWallet(item.oldValue().shortWallet);
          item.userCode(item.oldValue().userCode);
          item.status(item.oldValue().status);
-         item.walletTokenSiw(item.oldValue().walletTokenSiw);
-        item.fullName(item.oldValue().fullName);
-        item.email(item.oldValue().email);
-        item.twitter(item.oldValue().twitter);
-        item.telegram(item.oldValue().telegram);
-        item.molaToken(item.oldValue().molaToken);
-        item.shortWallet(item.oldValue().shortWallet);
+         item.claim(item.oldValue().claim);
+         item.dateClaim(item.oldValue().dateClaim);
+         item.description(item.oldValue().description);
          //end table database field
          item.walletName(item.oldValue().walletName);
      }
-     function ConvertSiwUserToPostObject(item){
+     function ConvertSiwHistoryClaimRewardToPostObject(item){
          var postObject = {
-                    siwUserID:item.siwUserID(),
+                    siwHistoryClaimRewardID:item.siwHistoryClaimRewardID(),
                     walletID:item.walletID(),
+                    shortWallet:item.shortWallet(),
                     userCode:item.userCode(),
                     status:item.status(),
-                    walletTokenSiw:item.walletTokenSiw(),
-                          fullName:item.fullName(),
-                          email:item.email(),
-                          twitter:item.twitter(),
-                          telegram:item.telegram(),
-                          molaToken:item.molaToken(),
-                          shortWallet:item.shortWallet(),
+                    claim:item.claim(),
+                    dateClaim:item.dateClaim(),
+                    description:item.description(),
                     //end table database field               
                     guid:item.guid()
              };
              //update datetime format               
+           if(item.dateClaim()!==null)
+           {
+               postObject.dateClaimS = parseDateToSaveString(item.dateClaim(),DateTimeFormat.DateTimeToAPIString);
+           }
              //end update datetime format                
         return postObject;
     }
-    self.convertDataToSiwUser = function(dataItem){
-        var item = new SiwUser(
-                         dataItem.siwUserID,
+    self.convertDataToSiwHistoryClaimReward = function(dataItem){
+        var item = new SiwHistoryClaimReward(
+                         dataItem.siwHistoryClaimRewardID,
                          dataItem.walletID,
+                         dataItem.shortWallet,
                          dataItem.userCode,
                          dataItem.status,
-                         dataItem.walletTokenSiw,
-                         dataItem.fullName,
-                         dataItem.email,
-                         dataItem.twitter,
-                         dataItem.telegram,
-                         dataItem.molaToken,
-                         dataItem.shortWallet
+                         dataItem.claim,
+                         dataItem.dateClaimS,
+                         dataItem.description
                     //end table database field
                     );
                     item.guid(dataItem.guid);
@@ -365,7 +360,7 @@ var SiwUsersPageViewModel = function () {
         }
         return postParam;
     }
-    function ValidateSiwUser(item){
+    function ValidateSiwHistoryClaimReward(item){
          return true;
     } 
     //--------------- End Action Function ----------//

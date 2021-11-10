@@ -1,12 +1,11 @@
-var SiwUsersViewModel = function () {
+var SiwClaimAttendancesViewModel = function () {
     var self = this;
     self.getUrl = {     
-       getInit      : "/SiwUser/GetInit",
-       getSiwUsers        : "/SiwUser/GetAll",
-       saveSiwUser        : "/SiwUser/Save",
-       removeSiwUser      : "/SiwUser/Remove",
-        saveListSiwUser: "/SiwUser/SaveList",
-        randomWallet: "/SiwUser/RandomWallet",
+       getInit      : "/SiwClaimAttendance/GetInit",
+       getSiwClaimAttendances        : "/SiwClaimAttendance/GetAll",
+       saveSiwClaimAttendance        : "/SiwClaimAttendance/Save",
+       removeSiwClaimAttendance      : "/SiwClaimAttendance/Remove",
+       saveListSiwClaimAttendance      : "/SiwClaimAttendance/SaveList",
     };
     self.processing = ko.observable(null);
     self.transition = ko.observable(null);
@@ -18,8 +17,8 @@ var SiwUsersViewModel = function () {
     self.sortedField = ko.observable(null);
     self.arrSearchParam = ko.observableArray([]);
     self.numItemSave = ko.observable(10);
-    self.arrSSiwUser = ko.observableArray([]);
-    self.arrSiwUser = ko.observableArray([]);
+    self.arrSSiwClaimAttendance = ko.observableArray([]);
+    self.arrSiwClaimAttendance = ko.observableArray([]);
     //------- Init data for view model----------------------------
     self.initModel = function(transition,processing){
        self.transition = transition;
@@ -41,30 +40,30 @@ var SiwUsersViewModel = function () {
         self.ffDeleteList(ffDeletelist);
     };
     self.initData = function () {
-       InitSiwUsers();
+       InitSiwClaimAttendances();
     };
     self.initLocalData = function (data) {
         var arrItem = ko.utils.arrayMap(data, function (item) {
-            return self.convertDataToSiwUser(item);
+            return self.convertDataToSiwClaimAttendance(item);
         });
-        self.arrSiwUser.removeAll();
-        self.arrSiwUser(arrItem);
+        self.arrSiwClaimAttendance.removeAll();
+        self.arrSiwClaimAttendance(arrItem);
         if(self.ffInit() != null) self.ffInit()();
     };
     //--------------- For Searching -----------------------------//
-    self.searchSiwUsers = function(){
-        InitSiwUsers();
+    self.searchSiwClaimAttendances = function(){
+        InitSiwClaimAttendances();
     };
     //--------------- For Item -----------------------------//
     //--------------- Model Event ----------//
-    self.startAddSiwUser = function(){
-        self.processing().setProcessing("SiwUsers",true);
-         CallAPI(self.getUrl.getInit, {}, "GET", FinishInitNewSiwUser,CallAPIFail);
+    self.startAddSiwClaimAttendance = function(){
+        self.processing().setProcessing("SiwClaimAttendances",true);
+         CallAPI(self.getUrl.getInit, {}, "GET", FinishInitNewSiwClaimAttendance,CallAPIFail);
     };
-    self.startEditSiwUser = function(item){
+    self.startEditSiwClaimAttendance = function(item){
         item.oldValue(ko.toJS(item));
         item.isEdit(true);
-        if(item.siwUserID() != 0)
+        if(item.siwClaimAttendanceID() != 0)
         {
             item.editMode("Edit");
         }
@@ -73,19 +72,19 @@ var SiwUsersViewModel = function () {
             item.editMode("New");
         }
     };
-    self.finishEditSiwUser = function(item){
-        SaveSiwUser(item);
+    self.finishEditSiwClaimAttendance = function(item){
+        SaveSiwClaimAttendance(item);
     };
-    self.cancelEditSiwUser = function(item){
-        if(item.siwUserID()==null||item.siwUserID()==0){
-            self.arrSiwUser.remove(item);
+    self.cancelEditSiwClaimAttendance = function(item){
+        if(item.siwClaimAttendanceID()==null||item.siwClaimAttendanceID()==0){
+            self.arrSiwClaimAttendance.remove(item);
         }else{
-            ResetSiwUser(item);
+            ResetSiwClaimAttendance(item);
             item.isEdit(false);
         }
     };
-    self.removeSiwUser = function(item){
-        DeleteSiwUser(item);
+    self.removeSiwClaimAttendance = function(item){
+        DeleteSiwClaimAttendance(item);
     };
     self.startSort = function(field){
         if(self.sortedField()!=null){
@@ -98,83 +97,83 @@ var SiwUsersViewModel = function () {
         }else{
             self.sortedField(new SortField(field,false));
         }
-        InitSiwUsers();
+        InitSiwClaimAttendances();
     };
     //--------------- Action Function ----------//
-    function FinishInitNewSiwUser(data){
+    function FinishInitNewSiwClaimAttendance(data){
         if(data.result =="Success"){
-            var item = self.convertDataToSiwUser(data.siwUser);
-            item.guid(data.siwUser.guid);
+            var item = self.convertDataToSiwClaimAttendance(data.siwClaimAttendance);
+            item.guid(data.siwClaimAttendance.guid);
             item.oldValue(ko.toJS(item));
             item.isEdit(true);
-            self.arrSiwUser.unshift(item);
+            self.arrSiwClaimAttendance.unshift(item);
         }
-        self.processing().setProcessing("SiwUsers",false);
+        self.processing().setProcessing("SiwClaimAttendances",false);
     }
-    function InitSiwUsers(){
-        self.processing().setProcessing("SiwUsers",true);
+    function InitSiwClaimAttendances(){
+        self.processing().setProcessing("SiwClaimAttendances",true);
         var postParam = CollectGetParams();
         var json = JSON.stringify(postParam);
         CallAPI(
-           self.getUrl.getSiwUsers,
+           self.getUrl.getSiwClaimAttendances,
            json,
            "POST",
-           FinishInitSiwUsers,
+           FinishInitSiwClaimAttendances,
            CallAPIFail
       );
     }
-    function FinishInitSiwUsers(data){
+    function FinishInitSiwClaimAttendances(data){
         if(data.result == "Success"){
-           var arrItem = ko.utils.arrayMap(data.siwUsers,function(item){
-               return self.convertDataToSiwUser(item);
+           var arrItem = ko.utils.arrayMap(data.siwClaimAttendances,function(item){
+               return self.convertDataToSiwClaimAttendance(item);
            });
-           self.arrSiwUser.removeAll();
-           self.arrSiwUser(arrItem);
+           self.arrSiwClaimAttendance.removeAll();
+           self.arrSiwClaimAttendance(arrItem);
         }
         //function run after init data
         if(self.ffInit() != null) self.ffInit()();
-        self.processing().setProcessing("SiwUsers",false);
+        self.processing().setProcessing("SiwClaimAttendances",false);
     }
-    function SaveSiwUser(item){
-        if(ValidateSiwUser(item)){
-            self.processing().setProcessing("SiwUsers",true);
-            var json = JSON.stringify(ConvertSiwUserToPostObject(item));
+    function SaveSiwClaimAttendance(item){
+        if(ValidateSiwClaimAttendance(item)){
+            self.processing().setProcessing("SiwClaimAttendances",true);
+            var json = JSON.stringify(ConvertSiwClaimAttendanceToPostObject(item));
             CallAPI(
-                 self.getUrl.saveSiwUser,
+                 self.getUrl.saveSiwClaimAttendance,
                  json,
                  "POST",
-                 FinishSaveSiwUser,
+                 FinishSaveSiwClaimAttendance,
                  CallAPIFail
              );
         }
     } 
-    function FinishSaveSiwUser(data){
+    function FinishSaveSiwClaimAttendance(data){
         if(data.result == "Success"){
             var item;
-            if(data.siwUserID != null&&data.siwUserID != 0)
+            if(data.siwClaimAttendanceID != null&&data.siwClaimAttendanceID != 0)
             {
-                item = ko.utils.arrayFirst(self.arrSiwUser(),function(item1){
-                           return item1.siwUserID() == data.siwUserID;
+                item = ko.utils.arrayFirst(self.arrSiwClaimAttendance(),function(item1){
+                           return item1.siwClaimAttendanceID() == data.siwClaimAttendanceID;
                        });
             }else
             {
-                item = ko.utils.arrayFirst(self.arrSiwUser(),function(item1){
+                item = ko.utils.arrayFirst(self.arrSiwClaimAttendance(),function(item1){
                            return item1.guid() == data.guid;
                        });
             }
             if(item!=null)
             {
-                item.siwUserID(data.siwUser.siwUserID);
+                item.siwClaimAttendanceID(data.siwClaimAttendance.siwClaimAttendanceID);
                 item.isEdit(false);
             }
         }
-        self.processing().setProcessing("SiwUsers",false);
+        self.processing().setProcessing("SiwClaimAttendances",false);
         if(self.ffSave()!=null)
         {
             self.ffSave()();
         }
     }
-    function DeleteSiwUser(item)
+    function DeleteSiwClaimAttendance(item)
     {
         swal({
         title: Language.DeleteConfirmTitle,
@@ -192,18 +191,18 @@ var SiwUsersViewModel = function () {
             {
                if(item != null)
               {
-                  if(item.siwUserID() == null || item.siwUserID() == 0)
+                  if(item.siwClaimAttendanceID() == null || item.siwClaimAttendanceID() == 0)
                   {
-                     self.arrSiwUser.remove(item);
+                     self.arrSiwClaimAttendance.remove(item);
                  }
                  else
                  {
-                      self.processing().setProcessing("SiwUsers", true);
+                      self.processing().setProcessing("SiwClaimAttendances", true);
                       CallAPI(
-                         self.getUrl.removeSiwUser + "?id=" + item.siwUserID(),
+                         self.getUrl.removeSiwClaimAttendance + "?id=" + item.siwClaimAttendanceID(),
                          null,
                          "DELETE",
-                         FinishDeleteSiwUser,
+                         FinishDeleteSiwClaimAttendance,
                          CallAPIFail
                      );
                 }
@@ -211,65 +210,57 @@ var SiwUsersViewModel = function () {
         }
     });
     }
-    function FinishDeleteSiwUser(data)
+    function FinishDeleteSiwClaimAttendance(data)
     {
         if(data.result == "Success")
         {
-            self.arrSiwUser.remove(function(item) { return item.siwUserID() == data.siwUserID; });
+            self.arrSiwClaimAttendance.remove(function(item) { return item.siwClaimAttendanceID() == data.siwClaimAttendanceID; });
         }
         else
         {
             swal("", Language.DeleteResultFailMessage, "warning");
        }
-        self.processing().setProcessing("SiwUsers", false);
+        self.processing().setProcessing("SiwClaimAttendances", false);
        if(self.ffDelete() != null) self.ffDelete()();
     }
-    function ResetSiwUser(item){
-        item.siwUserID(item.oldValue().siwUserID);
+    function ResetSiwClaimAttendance(item){
+        item.siwClaimAttendanceID(item.oldValue().siwClaimAttendanceID);
         item.walletID(item.oldValue().walletID);
         item.userCode(item.oldValue().userCode);
         item.status(item.oldValue().status);
-        item.walletTokenSiw(item.oldValue().walletTokenSiw);
-        item.fullName(item.oldValue().fullName);
-        item.email(item.oldValue().email);
-        item.twitter(item.oldValue().twitter);
-        item.telegram(item.oldValue().telegram);
-        item.molaToken(item.oldValue().molaToken);
+        item.startClaimAttendance(item.oldValue().startClaimAttendance);
+        item.availableClaim(item.oldValue().availableClaim);
         item.shortWallet(item.oldValue().shortWallet);
         //end table database field
     }
-    function ConvertSiwUserToPostObject(item){
+    function ConvertSiwClaimAttendanceToPostObject(item){
         var postObject = {
-                          siwUserID:item.siwUserID(),
+                          siwClaimAttendanceID:item.siwClaimAttendanceID(),
                           walletID:item.walletID(),
                           userCode:item.userCode(),
                           status:item.status(),
-                          walletTokenSiw:item.walletTokenSiw(),
-                          fullName:item.fullName(),
-                          email:item.email(),
-                          twitter:item.twitter(),
-                          telegram:item.telegram(),
-                          molaToken:item.molaToken(),
+                          startClaimAttendance:item.startClaimAttendance(),
+                          availableClaim:item.availableClaim(),
                           shortWallet:item.shortWallet(),
                           //end table database field
                           guid:item.guid()
                          };
                //update datetime format                
+           if(item.startClaimAttendance()!==null)
+           {
+               postObject.startClaimAttendanceS = parseDateToSaveString(item.startClaimAttendance(),DateTimeFormat.DateMomentConvertFormat);
+           }
                //end update datetime format                
        return postObject;
    }
-   self.convertDataToSiwUser = function(dataItem){
-       var item = new SiwUser(
-                         dataItem.siwUserID,
+   self.convertDataToSiwClaimAttendance = function(dataItem){
+       var item = new SiwClaimAttendance(
+                         dataItem.siwClaimAttendanceID,
                          dataItem.walletID,
                          dataItem.userCode,
                          dataItem.status,
-                         dataItem.walletTokenSiw,
-                         dataItem.fullName,
-                         dataItem.email,
-                         dataItem.twitter,
-                         dataItem.telegram,
-                         dataItem.molaToken,
+                         dataItem.startClaimAttendanceS,
+                         dataItem.availableClaim,
                          dataItem.shortWallet
                                     //end table database field
                                   );
@@ -297,7 +288,7 @@ var SiwUsersViewModel = function () {
         }
         return postParam;
     }
-    function ValidateSiwUser(item){
+    function ValidateSiwClaimAttendance(item){
         return true;
     } 
     self.getSearchParam = function (key) {
@@ -316,30 +307,30 @@ var SiwUsersViewModel = function () {
             self.arrSearchParam.push(param);
         }else{ param.value(value);}
     };
-     self.startAddListSiwUser = function(){
-         self.processing().setProcessing("SiwUsers",true);
-         CallAPI(self.getUrl.getInit, null,"GET", FinishInitListNewSiwUser);
+     self.startAddListSiwClaimAttendance = function(){
+         self.processing().setProcessing("SiwClaimAttendances",true);
+         CallAPI(self.getUrl.getInit, null,"GET", FinishInitListNewSiwClaimAttendance);
      };
-     self.startEditListSiwUser = function(item){
+     self.startEditListSiwClaimAttendance = function(item){
         item.oldValue(ko.toJS(item));
         item.isEdit(true);
-        if(item.siwUserID()>0){
+        if(item.siwClaimAttendanceID()>0){
             item.editMode("Edit");
         }
     };
-    self.finishEditListSiwUser = function(item){
-        if(ValidateSiwUser(item)){
+    self.finishEditListSiwClaimAttendance = function(item){
+        if(ValidateSiwClaimAttendance(item)){
            item.isEdit(false);
         }
     };
-    self.cancelEditListSiwUser = function(item){
+    self.cancelEditListSiwClaimAttendance = function(item){
         if(item.editMode()=="Delete"){ item.editMode("");}
-        ResetSiwUser(item);
+        ResetSiwClaimAttendance(item);
         item.isEdit(false);
     };
-    self.removeListSiwUser = function(item){
-        if(item.siwUserID()==null||item.siwUserID()==0){
-           self.arrSiwUser.remove(item);
+    self.removeListSiwClaimAttendance = function(item){
+        if(item.siwClaimAttendanceID()==null||item.siwClaimAttendanceID()==0){
+           self.arrSiwClaimAttendance.remove(item);
            if(self.ffDeleteList() != null) self.ffDeleteList()();
         }else{
             swal({
@@ -361,68 +352,34 @@ var SiwUsersViewModel = function () {
             });
         }
     };
-    function FinishInitListNewSiwUser(data){
+    function FinishInitListNewSiwClaimAttendance(data){
        if(data.result =="Success"){
-          var item = self.convertDataToSiwUser(data.siwUser);
+          var item = self.convertDataToSiwClaimAttendance(data.siwClaimAttendance);
           item.editMode("New");
           item.oldValue(ko.toJS(item));
           item.isEdit(true);
-          self.arrSiwUser.push(item);
+          self.arrSiwClaimAttendance.push(item);
        }
-       self.processing().setProcessing("SiwUsers",false);
+       self.processing().setProcessing("SiwClaimAttendances",false);
     }
-    self.saveAllSiwUser = function(){
-        SaveListSiwUser();
+    self.saveAllSiwClaimAttendance = function(){
+        SaveListSiwClaimAttendance();
     };
-    self.randomeAll = function () {
-        RandomWallet();
-    };
-    function RandomWallet() {
-        var postArray = new Array();
-        var isOK = true;
-        var nexitem = self.arrSSiwUser().length;
-        var numsave = self.numItemSave();
-        for (var i = nexitem; i < self.arrSiwUser().length && numsave > 0; i++) {
-            var item = self.arrSiwUser()[i];
-            if (item.editMode() != "Delete") {
-                isOK = isOK && ValidateSiwUser(item);
-                if (isOK) {
-                    postArray.push(ko.toJS(item));
-                }
-            }
-            else {
-                postArray.push(ko.toJS(item));
-            }
-            self.arrSSiwUser.push(item);
-            numsave--;
-        }
-        if (postArray.length > 0) {
-            self.processing().setProcessing("SiwUsers", true);
-            var json = JSON.stringify(postArray);
-            CallAPI(
-                self.getUrl.randomWallet,
-                json,
-                "POST",
-                FinishSaveListSiwUser,
-                CallAPIFail
-            );
-        }
-    }
     function CallAPIFail(jqXHR, textStatus, errorThrown)
     {
         // If fail
-        self.processing().setProcessing("SiwUsers", false);
+        self.processing().setProcessing("SiwClaimAttendances", false);
         swal(Language.CallAPIFailMessage, "", "warning");
     }
-    function SaveListSiwUser() {
+    function SaveListSiwClaimAttendance() {
         var postArray = new Array();
         var isOK = true;
-        var nexitem = self.arrSSiwUser().length;
+        var nexitem = self.arrSSiwClaimAttendance().length;
         var numsave = self.numItemSave();
-        for (var i = nexitem; i < self.arrSiwUser().length&&numsave>0; i++) {
-            var item = self.arrSiwUser()[i];
+        for (var i = nexitem; i < self.arrSiwClaimAttendance().length&&numsave>0; i++) {
+            var item = self.arrSiwClaimAttendance()[i];
             if(item.editMode() != "Delete") {
-                isOK = isOK && ValidateSiwUser(item);
+                isOK = isOK && ValidateSiwClaimAttendance(item);
                 if(isOK) {
                     postArray.push(ko.toJS(item));
                 }
@@ -430,30 +387,30 @@ var SiwUsersViewModel = function () {
             else {
                 postArray.push(ko.toJS(item));
             }
-            self.arrSSiwUser.push(item);
+            self.arrSSiwClaimAttendance.push(item);
             numsave--;
         }
         if(postArray.length>0) {
-            self.processing().setProcessing("SiwUsers", true);
+            self.processing().setProcessing("SiwClaimAttendances", true);
             var json = JSON.stringify(postArray);
             CallAPI(
-               self.getUrl.saveListSiwUser,
+               self.getUrl.saveListSiwClaimAttendance,
                  json,
                 "POST",
-                FinishSaveListSiwUser,
+                FinishSaveListSiwClaimAttendance,
                 CallAPIFail
             );
         }
     }
-    function FinishSaveListSiwUser(data) {
+    function FinishSaveListSiwClaimAttendance(data) {
         if(data.result == "Success") {
-            ko.utils.arrayForEach(self.arrSSiwUser(), function (item) {
-                if(item.siwUserID() == null||item.siwUserID() == 0) {
-                    var dataItem = ko.utils.arrayFirst(data.siwUsers, function (item1) {
+            ko.utils.arrayForEach(self.arrSSiwClaimAttendance(), function (item) {
+                if(item.siwClaimAttendanceID() == null||item.siwClaimAttendanceID() == 0) {
+                    var dataItem = ko.utils.arrayFirst(data.siwClaimAttendances, function (item1) {
                         return item1.guid == item.guid();
                     });
                     if(dataItem != null) {
-                        item.siwUserID(dataItem.siwUserID);
+                        item.siwClaimAttendanceID(dataItem.siwClaimAttendanceID);
                     }
                 }
                 if(item.editMode() != "Delete") {
@@ -462,15 +419,15 @@ var SiwUsersViewModel = function () {
                 item.isEdit(false);
             });
         }
-        if(self.arrSiwUser().length == self.arrSSiwUser().length) {
-            self.processing().setProcessing("SiwUsers", false);
-            self.arrSSiwUser.removeAll();
-            self.arrSiwUser.remove(function(item){ return item.editMode()=="Delete";});
+        if(self.arrSiwClaimAttendance().length == self.arrSSiwClaimAttendance().length) {
+            self.processing().setProcessing("SiwClaimAttendances", false);
+            self.arrSSiwClaimAttendance.removeAll();
+            self.arrSiwClaimAttendance.remove(function(item){ return item.editMode()=="Delete";});
             if(self.ffSaveAll() != null) {
                 self.ffSaveAll()();
             }
         } else {
-            SaveListSiwUser();
+            SaveListSiwClaimAttendance();
         }
     }
      //--------------- End Action Function ----------//

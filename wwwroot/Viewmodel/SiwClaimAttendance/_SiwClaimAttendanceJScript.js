@@ -1,28 +1,21 @@
-        var SiwUser = function (
-                     siwuserid,
+        var SiwClaimAttendance = function (
+                     siwclaimattendanceid,
                      walletid,
                      usercode,
                      status,
-                     wallettokensiw,
-                     fullname,
-                     email,
-                     twitter,
-                     telegram,
-                     molatoken,
+                     startclaimattendance,
+                     availableclaim,
                      shortwallet
                      //end table database field
                          ) {
             var self = this;
-            self.siwUserID = ko.observable(siwuserid);
+            self.siwClaimAttendanceID = ko.observable(siwclaimattendanceid);
             self.walletID = ko.observable(walletid);
             self.userCode = ko.observable(usercode);
             self.status = ko.observable(status);
-            self.walletTokenSiw = ko.observable(wallettokensiw);
-            self.fullName = ko.observable(fullname);
-            self.email = ko.observable(email);
-            self.twitter = ko.observable(twitter);
-            self.telegram = ko.observable(telegram);
-            self.molaToken = ko.observable(molatoken);
+            self.startClaimAttendance = ko.observable(parseStringToDateTime(startclaimattendance,DateTimeFormat.APIStringToDateTime));
+            self.startClaimAttendanceF = ko.observable(parseStringToDisplayDateTime(startclaimattendance,DateTimeFormat.APIStringToDateTime,DateTimeFormat.DateTimeToDisplay));
+            self.availableClaim = ko.observable(availableclaim);
             self.shortWallet = ko.observable(shortwallet);
             //end table database field
             self.guid = ko.observable('');

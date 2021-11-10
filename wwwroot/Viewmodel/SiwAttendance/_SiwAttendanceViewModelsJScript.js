@@ -1,12 +1,11 @@
-var SiwUsersViewModel = function () {
+var SiwAttendancesViewModel = function () {
     var self = this;
     self.getUrl = {     
-       getInit      : "/SiwUser/GetInit",
-       getSiwUsers        : "/SiwUser/GetAll",
-       saveSiwUser        : "/SiwUser/Save",
-       removeSiwUser      : "/SiwUser/Remove",
-        saveListSiwUser: "/SiwUser/SaveList",
-        randomWallet: "/SiwUser/RandomWallet",
+       getInit      : "/SiwAttendance/GetInit",
+       getSiwAttendances        : "/SiwAttendance/GetAll",
+       saveSiwAttendance        : "/SiwAttendance/Save",
+       removeSiwAttendance      : "/SiwAttendance/Remove",
+       saveListSiwAttendance      : "/SiwAttendance/SaveList",
     };
     self.processing = ko.observable(null);
     self.transition = ko.observable(null);
@@ -18,8 +17,8 @@ var SiwUsersViewModel = function () {
     self.sortedField = ko.observable(null);
     self.arrSearchParam = ko.observableArray([]);
     self.numItemSave = ko.observable(10);
-    self.arrSSiwUser = ko.observableArray([]);
-    self.arrSiwUser = ko.observableArray([]);
+    self.arrSSiwAttendance = ko.observableArray([]);
+    self.arrSiwAttendance = ko.observableArray([]);
     //------- Init data for view model----------------------------
     self.initModel = function(transition,processing){
        self.transition = transition;
@@ -41,30 +40,30 @@ var SiwUsersViewModel = function () {
         self.ffDeleteList(ffDeletelist);
     };
     self.initData = function () {
-       InitSiwUsers();
+       InitSiwAttendances();
     };
     self.initLocalData = function (data) {
         var arrItem = ko.utils.arrayMap(data, function (item) {
-            return self.convertDataToSiwUser(item);
+            return self.convertDataToSiwAttendance(item);
         });
-        self.arrSiwUser.removeAll();
-        self.arrSiwUser(arrItem);
+        self.arrSiwAttendance.removeAll();
+        self.arrSiwAttendance(arrItem);
         if(self.ffInit() != null) self.ffInit()();
     };
     //--------------- For Searching -----------------------------//
-    self.searchSiwUsers = function(){
-        InitSiwUsers();
+    self.searchSiwAttendances = function(){
+        InitSiwAttendances();
     };
     //--------------- For Item -----------------------------//
     //--------------- Model Event ----------//
-    self.startAddSiwUser = function(){
-        self.processing().setProcessing("SiwUsers",true);
-         CallAPI(self.getUrl.getInit, {}, "GET", FinishInitNewSiwUser,CallAPIFail);
+    self.startAddSiwAttendance = function(){
+        self.processing().setProcessing("SiwAttendances",true);
+         CallAPI(self.getUrl.getInit, {}, "GET", FinishInitNewSiwAttendance,CallAPIFail);
     };
-    self.startEditSiwUser = function(item){
+    self.startEditSiwAttendance = function(item){
         item.oldValue(ko.toJS(item));
         item.isEdit(true);
-        if(item.siwUserID() != 0)
+        if(item.siwAttendanceID() != 0)
         {
             item.editMode("Edit");
         }
@@ -73,19 +72,19 @@ var SiwUsersViewModel = function () {
             item.editMode("New");
         }
     };
-    self.finishEditSiwUser = function(item){
-        SaveSiwUser(item);
+    self.finishEditSiwAttendance = function(item){
+        SaveSiwAttendance(item);
     };
-    self.cancelEditSiwUser = function(item){
-        if(item.siwUserID()==null||item.siwUserID()==0){
-            self.arrSiwUser.remove(item);
+    self.cancelEditSiwAttendance = function(item){
+        if(item.siwAttendanceID()==null||item.siwAttendanceID()==0){
+            self.arrSiwAttendance.remove(item);
         }else{
-            ResetSiwUser(item);
+            ResetSiwAttendance(item);
             item.isEdit(false);
         }
     };
-    self.removeSiwUser = function(item){
-        DeleteSiwUser(item);
+    self.removeSiwAttendance = function(item){
+        DeleteSiwAttendance(item);
     };
     self.startSort = function(field){
         if(self.sortedField()!=null){
@@ -98,83 +97,83 @@ var SiwUsersViewModel = function () {
         }else{
             self.sortedField(new SortField(field,false));
         }
-        InitSiwUsers();
+        InitSiwAttendances();
     };
     //--------------- Action Function ----------//
-    function FinishInitNewSiwUser(data){
+    function FinishInitNewSiwAttendance(data){
         if(data.result =="Success"){
-            var item = self.convertDataToSiwUser(data.siwUser);
-            item.guid(data.siwUser.guid);
+            var item = self.convertDataToSiwAttendance(data.siwAttendance);
+            item.guid(data.siwAttendance.guid);
             item.oldValue(ko.toJS(item));
             item.isEdit(true);
-            self.arrSiwUser.unshift(item);
+            self.arrSiwAttendance.unshift(item);
         }
-        self.processing().setProcessing("SiwUsers",false);
+        self.processing().setProcessing("SiwAttendances",false);
     }
-    function InitSiwUsers(){
-        self.processing().setProcessing("SiwUsers",true);
+    function InitSiwAttendances(){
+        self.processing().setProcessing("SiwAttendances",true);
         var postParam = CollectGetParams();
         var json = JSON.stringify(postParam);
         CallAPI(
-           self.getUrl.getSiwUsers,
+           self.getUrl.getSiwAttendances,
            json,
            "POST",
-           FinishInitSiwUsers,
+           FinishInitSiwAttendances,
            CallAPIFail
       );
     }
-    function FinishInitSiwUsers(data){
+    function FinishInitSiwAttendances(data){
         if(data.result == "Success"){
-           var arrItem = ko.utils.arrayMap(data.siwUsers,function(item){
-               return self.convertDataToSiwUser(item);
+           var arrItem = ko.utils.arrayMap(data.siwAttendances,function(item){
+               return self.convertDataToSiwAttendance(item);
            });
-           self.arrSiwUser.removeAll();
-           self.arrSiwUser(arrItem);
+           self.arrSiwAttendance.removeAll();
+           self.arrSiwAttendance(arrItem);
         }
         //function run after init data
         if(self.ffInit() != null) self.ffInit()();
-        self.processing().setProcessing("SiwUsers",false);
+        self.processing().setProcessing("SiwAttendances",false);
     }
-    function SaveSiwUser(item){
-        if(ValidateSiwUser(item)){
-            self.processing().setProcessing("SiwUsers",true);
-            var json = JSON.stringify(ConvertSiwUserToPostObject(item));
+    function SaveSiwAttendance(item){
+        if(ValidateSiwAttendance(item)){
+            self.processing().setProcessing("SiwAttendances",true);
+            var json = JSON.stringify(ConvertSiwAttendanceToPostObject(item));
             CallAPI(
-                 self.getUrl.saveSiwUser,
+                 self.getUrl.saveSiwAttendance,
                  json,
                  "POST",
-                 FinishSaveSiwUser,
+                 FinishSaveSiwAttendance,
                  CallAPIFail
              );
         }
     } 
-    function FinishSaveSiwUser(data){
+    function FinishSaveSiwAttendance(data){
         if(data.result == "Success"){
             var item;
-            if(data.siwUserID != null&&data.siwUserID != 0)
+            if(data.siwAttendanceID != null&&data.siwAttendanceID != 0)
             {
-                item = ko.utils.arrayFirst(self.arrSiwUser(),function(item1){
-                           return item1.siwUserID() == data.siwUserID;
+                item = ko.utils.arrayFirst(self.arrSiwAttendance(),function(item1){
+                           return item1.siwAttendanceID() == data.siwAttendanceID;
                        });
             }else
             {
-                item = ko.utils.arrayFirst(self.arrSiwUser(),function(item1){
+                item = ko.utils.arrayFirst(self.arrSiwAttendance(),function(item1){
                            return item1.guid() == data.guid;
                        });
             }
             if(item!=null)
             {
-                item.siwUserID(data.siwUser.siwUserID);
+                item.siwAttendanceID(data.siwAttendance.siwAttendanceID);
                 item.isEdit(false);
             }
         }
-        self.processing().setProcessing("SiwUsers",false);
+        self.processing().setProcessing("SiwAttendances",false);
         if(self.ffSave()!=null)
         {
             self.ffSave()();
         }
     }
-    function DeleteSiwUser(item)
+    function DeleteSiwAttendance(item)
     {
         swal({
         title: Language.DeleteConfirmTitle,
@@ -192,18 +191,18 @@ var SiwUsersViewModel = function () {
             {
                if(item != null)
               {
-                  if(item.siwUserID() == null || item.siwUserID() == 0)
+                  if(item.siwAttendanceID() == null || item.siwAttendanceID() == 0)
                   {
-                     self.arrSiwUser.remove(item);
+                     self.arrSiwAttendance.remove(item);
                  }
                  else
                  {
-                      self.processing().setProcessing("SiwUsers", true);
+                      self.processing().setProcessing("SiwAttendances", true);
                       CallAPI(
-                         self.getUrl.removeSiwUser + "?id=" + item.siwUserID(),
+                         self.getUrl.removeSiwAttendance + "?id=" + item.siwAttendanceID(),
                          null,
                          "DELETE",
-                         FinishDeleteSiwUser,
+                         FinishDeleteSiwAttendance,
                          CallAPIFail
                      );
                 }
@@ -211,65 +210,69 @@ var SiwUsersViewModel = function () {
         }
     });
     }
-    function FinishDeleteSiwUser(data)
+    function FinishDeleteSiwAttendance(data)
     {
         if(data.result == "Success")
         {
-            self.arrSiwUser.remove(function(item) { return item.siwUserID() == data.siwUserID; });
+            self.arrSiwAttendance.remove(function(item) { return item.siwAttendanceID() == data.siwAttendanceID; });
         }
         else
         {
             swal("", Language.DeleteResultFailMessage, "warning");
        }
-        self.processing().setProcessing("SiwUsers", false);
+        self.processing().setProcessing("SiwAttendances", false);
        if(self.ffDelete() != null) self.ffDelete()();
     }
-    function ResetSiwUser(item){
-        item.siwUserID(item.oldValue().siwUserID);
+    function ResetSiwAttendance(item){
+        item.siwAttendanceID(item.oldValue().siwAttendanceID);
         item.walletID(item.oldValue().walletID);
+        item.confirmWallet(item.oldValue().confirmWallet);
+        item.fullName(item.oldValue().fullName);
         item.userCode(item.oldValue().userCode);
         item.status(item.oldValue().status);
-        item.walletTokenSiw(item.oldValue().walletTokenSiw);
-        item.fullName(item.oldValue().fullName);
-        item.email(item.oldValue().email);
+        item.attendance(item.oldValue().attendance);
+        item.timeAttendance(item.oldValue().timeAttendance);
         item.twitter(item.oldValue().twitter);
-        item.telegram(item.oldValue().telegram);
-        item.molaToken(item.oldValue().molaToken);
+        item.linkRetweet(item.oldValue().linkRetweet);
         item.shortWallet(item.oldValue().shortWallet);
         //end table database field
     }
-    function ConvertSiwUserToPostObject(item){
+    function ConvertSiwAttendanceToPostObject(item){
         var postObject = {
-                          siwUserID:item.siwUserID(),
+                          siwAttendanceID:item.siwAttendanceID(),
                           walletID:item.walletID(),
+                          confirmWallet:item.confirmWallet(),
+                          fullName:item.fullName(),
                           userCode:item.userCode(),
                           status:item.status(),
-                          walletTokenSiw:item.walletTokenSiw(),
-                          fullName:item.fullName(),
-                          email:item.email(),
+                          attendance:item.attendance(),
+                          timeAttendance:item.timeAttendance(),
                           twitter:item.twitter(),
-                          telegram:item.telegram(),
-                          molaToken:item.molaToken(),
+                          linkRetweet:item.linkRetweet(),
                           shortWallet:item.shortWallet(),
                           //end table database field
                           guid:item.guid()
                          };
                //update datetime format                
+           if(item.timeAttendance()!==null)
+           {
+               postObject.timeAttendanceS = parseDateToSaveString(item.timeAttendance(),DateTimeFormat.DateMomentConvertFormat);
+           }
                //end update datetime format                
        return postObject;
    }
-   self.convertDataToSiwUser = function(dataItem){
-       var item = new SiwUser(
-                         dataItem.siwUserID,
+   self.convertDataToSiwAttendance = function(dataItem){
+       var item = new SiwAttendance(
+                         dataItem.siwAttendanceID,
                          dataItem.walletID,
+                         dataItem.confirmWallet,
+                         dataItem.fullName,
                          dataItem.userCode,
                          dataItem.status,
-                         dataItem.walletTokenSiw,
-                         dataItem.fullName,
-                         dataItem.email,
+                         dataItem.attendance,
+                         dataItem.timeAttendanceS,
                          dataItem.twitter,
-                         dataItem.telegram,
-                         dataItem.molaToken,
+                         dataItem.linkRetweet,
                          dataItem.shortWallet
                                     //end table database field
                                   );
@@ -297,7 +300,7 @@ var SiwUsersViewModel = function () {
         }
         return postParam;
     }
-    function ValidateSiwUser(item){
+    function ValidateSiwAttendance(item){
         return true;
     } 
     self.getSearchParam = function (key) {
@@ -316,30 +319,30 @@ var SiwUsersViewModel = function () {
             self.arrSearchParam.push(param);
         }else{ param.value(value);}
     };
-     self.startAddListSiwUser = function(){
-         self.processing().setProcessing("SiwUsers",true);
-         CallAPI(self.getUrl.getInit, null,"GET", FinishInitListNewSiwUser);
+     self.startAddListSiwAttendance = function(){
+         self.processing().setProcessing("SiwAttendances",true);
+         CallAPI(self.getUrl.getInit, null,"GET", FinishInitListNewSiwAttendance);
      };
-     self.startEditListSiwUser = function(item){
+     self.startEditListSiwAttendance = function(item){
         item.oldValue(ko.toJS(item));
         item.isEdit(true);
-        if(item.siwUserID()>0){
+        if(item.siwAttendanceID()>0){
             item.editMode("Edit");
         }
     };
-    self.finishEditListSiwUser = function(item){
-        if(ValidateSiwUser(item)){
+    self.finishEditListSiwAttendance = function(item){
+        if(ValidateSiwAttendance(item)){
            item.isEdit(false);
         }
     };
-    self.cancelEditListSiwUser = function(item){
+    self.cancelEditListSiwAttendance = function(item){
         if(item.editMode()=="Delete"){ item.editMode("");}
-        ResetSiwUser(item);
+        ResetSiwAttendance(item);
         item.isEdit(false);
     };
-    self.removeListSiwUser = function(item){
-        if(item.siwUserID()==null||item.siwUserID()==0){
-           self.arrSiwUser.remove(item);
+    self.removeListSiwAttendance = function(item){
+        if(item.siwAttendanceID()==null||item.siwAttendanceID()==0){
+           self.arrSiwAttendance.remove(item);
            if(self.ffDeleteList() != null) self.ffDeleteList()();
         }else{
             swal({
@@ -361,68 +364,34 @@ var SiwUsersViewModel = function () {
             });
         }
     };
-    function FinishInitListNewSiwUser(data){
+    function FinishInitListNewSiwAttendance(data){
        if(data.result =="Success"){
-          var item = self.convertDataToSiwUser(data.siwUser);
+          var item = self.convertDataToSiwAttendance(data.siwAttendance);
           item.editMode("New");
           item.oldValue(ko.toJS(item));
           item.isEdit(true);
-          self.arrSiwUser.push(item);
+          self.arrSiwAttendance.push(item);
        }
-       self.processing().setProcessing("SiwUsers",false);
+       self.processing().setProcessing("SiwAttendances",false);
     }
-    self.saveAllSiwUser = function(){
-        SaveListSiwUser();
+    self.saveAllSiwAttendance = function(){
+        SaveListSiwAttendance();
     };
-    self.randomeAll = function () {
-        RandomWallet();
-    };
-    function RandomWallet() {
-        var postArray = new Array();
-        var isOK = true;
-        var nexitem = self.arrSSiwUser().length;
-        var numsave = self.numItemSave();
-        for (var i = nexitem; i < self.arrSiwUser().length && numsave > 0; i++) {
-            var item = self.arrSiwUser()[i];
-            if (item.editMode() != "Delete") {
-                isOK = isOK && ValidateSiwUser(item);
-                if (isOK) {
-                    postArray.push(ko.toJS(item));
-                }
-            }
-            else {
-                postArray.push(ko.toJS(item));
-            }
-            self.arrSSiwUser.push(item);
-            numsave--;
-        }
-        if (postArray.length > 0) {
-            self.processing().setProcessing("SiwUsers", true);
-            var json = JSON.stringify(postArray);
-            CallAPI(
-                self.getUrl.randomWallet,
-                json,
-                "POST",
-                FinishSaveListSiwUser,
-                CallAPIFail
-            );
-        }
-    }
     function CallAPIFail(jqXHR, textStatus, errorThrown)
     {
         // If fail
-        self.processing().setProcessing("SiwUsers", false);
+        self.processing().setProcessing("SiwAttendances", false);
         swal(Language.CallAPIFailMessage, "", "warning");
     }
-    function SaveListSiwUser() {
+    function SaveListSiwAttendance() {
         var postArray = new Array();
         var isOK = true;
-        var nexitem = self.arrSSiwUser().length;
+        var nexitem = self.arrSSiwAttendance().length;
         var numsave = self.numItemSave();
-        for (var i = nexitem; i < self.arrSiwUser().length&&numsave>0; i++) {
-            var item = self.arrSiwUser()[i];
+        for (var i = nexitem; i < self.arrSiwAttendance().length&&numsave>0; i++) {
+            var item = self.arrSiwAttendance()[i];
             if(item.editMode() != "Delete") {
-                isOK = isOK && ValidateSiwUser(item);
+                isOK = isOK && ValidateSiwAttendance(item);
                 if(isOK) {
                     postArray.push(ko.toJS(item));
                 }
@@ -430,30 +399,30 @@ var SiwUsersViewModel = function () {
             else {
                 postArray.push(ko.toJS(item));
             }
-            self.arrSSiwUser.push(item);
+            self.arrSSiwAttendance.push(item);
             numsave--;
         }
         if(postArray.length>0) {
-            self.processing().setProcessing("SiwUsers", true);
+            self.processing().setProcessing("SiwAttendances", true);
             var json = JSON.stringify(postArray);
             CallAPI(
-               self.getUrl.saveListSiwUser,
+               self.getUrl.saveListSiwAttendance,
                  json,
                 "POST",
-                FinishSaveListSiwUser,
+                FinishSaveListSiwAttendance,
                 CallAPIFail
             );
         }
     }
-    function FinishSaveListSiwUser(data) {
+    function FinishSaveListSiwAttendance(data) {
         if(data.result == "Success") {
-            ko.utils.arrayForEach(self.arrSSiwUser(), function (item) {
-                if(item.siwUserID() == null||item.siwUserID() == 0) {
-                    var dataItem = ko.utils.arrayFirst(data.siwUsers, function (item1) {
+            ko.utils.arrayForEach(self.arrSSiwAttendance(), function (item) {
+                if(item.siwAttendanceID() == null||item.siwAttendanceID() == 0) {
+                    var dataItem = ko.utils.arrayFirst(data.siwAttendances, function (item1) {
                         return item1.guid == item.guid();
                     });
                     if(dataItem != null) {
-                        item.siwUserID(dataItem.siwUserID);
+                        item.siwAttendanceID(dataItem.siwAttendanceID);
                     }
                 }
                 if(item.editMode() != "Delete") {
@@ -462,15 +431,15 @@ var SiwUsersViewModel = function () {
                 item.isEdit(false);
             });
         }
-        if(self.arrSiwUser().length == self.arrSSiwUser().length) {
-            self.processing().setProcessing("SiwUsers", false);
-            self.arrSSiwUser.removeAll();
-            self.arrSiwUser.remove(function(item){ return item.editMode()=="Delete";});
+        if(self.arrSiwAttendance().length == self.arrSSiwAttendance().length) {
+            self.processing().setProcessing("SiwAttendances", false);
+            self.arrSSiwAttendance.removeAll();
+            self.arrSiwAttendance.remove(function(item){ return item.editMode()=="Delete";});
             if(self.ffSaveAll() != null) {
                 self.ffSaveAll()();
             }
         } else {
-            SaveListSiwUser();
+            SaveListSiwAttendance();
         }
     }
      //--------------- End Action Function ----------//
